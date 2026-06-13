@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7c5cff"/>
+      <stop offset="100%" stop-color="#ff6b9d"/>
+    </linearGradient>
+    <linearGradient id="inner" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.8"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <g transform="translate(256, 256)">
+    <!-- Calendar body -->
+    <rect x="-100" y="-70" width="200" height="170" rx="20" fill="none" stroke="url(#inner)" stroke-width="12"/>
+    <!-- Calendar top bar -->
+    <line x1="-100" y1="-30" x2="100" y2="-30" stroke="url(#inner)" stroke-width="10"/>
+    <!-- Calendar hooks -->
+    <line x1="-55" y1="-95" x2="-55" y2="-60" stroke="url(#inner)" stroke-width="12" stroke-linecap="round"/>
+    <line x1="55" y1="-95" x2="55" y2="-60" stroke="url(#inner)" stroke-width="12" stroke-linecap="round"/>
+    <!-- Clock circle -->
+    <circle cx="0" cy="20" r="35" fill="none" stroke="url(#inner)" stroke-width="8"/>
+    <!-- Clock hands -->
+    <line x1="0" y1="20" x2="0" y2="0" stroke="url(#inner)" stroke-width="7" stroke-linecap="round"/>
+    <line x1="0" y1="20" x2="15" y2="30" stroke="url(#inner)" stroke-width="6" stroke-linecap="round"/>
+    <!-- Clock center dot -->
+    <circle cx="0" cy="20" r="4" fill="url(#inner)"/>
+  </g>
+</svg>
