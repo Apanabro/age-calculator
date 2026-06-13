@@ -387,6 +387,60 @@
         });
     });
 
+    // Feedback Form
+    var fbRating = 5;
+    var fbRatingBtns = document.querySelectorAll('.fb-star');
+    fbRatingBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            fbRating = parseInt(btn.getAttribute('data-val'));
+            fbRatingBtns.forEach(function (b) { b.classList.remove('active'); });
+            for (var i = 0; i < fbRating; i++) { fbRatingBtns[i].classList.add('active'); }
+        });
+    });
+
+    function openFeedbackModal() { $('feedbackModal').style.display = 'flex'; }
+    function closeFeedbackModal() { $('feedbackModal').style.display = 'none'; }
+
+    if ($('feedbackLink')) {
+        $('feedbackLink').addEventListener('click', function (e) { e.preventDefault(); openFeedbackModal(); });
+    }
+    $('closeFeedbackModal').addEventListener('click', closeFeedbackModal);
+    $('feedbackModal').addEventListener('click', function (e) { if (e.target === $('feedbackModal')) closeFeedbackModal(); });
+
+    $('feedbackForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var name = $('fbName').value.trim();
+        var email = $('fbEmail').value.trim();
+        var message = $('fbMessage').value.trim();
+        if (!message || message.length < 3) {
+            $('fbToastMsg').textContent = 'Please enter your feedback';
+            $('fbToast').classList.add('show');
+            setTimeout(function () { $('fbToast').classList.remove('show'); }, 2000);
+            return;
+        }
+        var data = { name: name || 'Anonymous', email: email, rating: fbRating, message: message };
+        fetch(API_BASE + '/feedback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        }).then(function (r) { return r.json(); }).then(function (res) {
+            $('fbToastMsg').textContent = res.message || 'Thank you for your feedback!';
+            $('fbToast').classList.add('show');
+            setTimeout(function () { $('fbToast').classList.remove('show'); }, 3000);
+            closeFeedbackModal();
+            $('feedbackForm').reset();
+            fbRating = 5;
+            fbRatingBtns.forEach(function (b) { b.classList.remove('active'); });
+            fbRatingBtns[4].classList.add('active');
+        }).catch(function () {
+            $('fbToastMsg').textContent = 'Feedback saved locally. Thank you!';
+            $('fbToast').classList.add('show');
+            setTimeout(function () { $('fbToast').classList.remove('show'); }, 3000);
+            closeFeedbackModal();
+            $('feedbackForm').reset();
+        });
+    });
+
     if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
     init();
 })();

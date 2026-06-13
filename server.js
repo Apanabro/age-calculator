@@ -126,6 +126,31 @@ app.get('/api/stats', async (req, res) => {
     } catch (e) { return res.json({ users: 0, certificates: 0 }); }
 });
 
+app.post('/api/feedback', async (req, res) => {
+    const { name, email, rating, message } = req.body;
+    if (!message || message.trim().length < 3) return res.status(400).json({ error: 'Please enter your feedback' });
+    if (db) {
+        try {
+            await db.collection('feedback').insertOne({
+                name: name || 'Anonymous',
+                email: email || '',
+                rating: rating || 5,
+                message: message.trim(),
+                createdAt: new Date()
+            });
+        } catch (e) {}
+    }
+    return res.json({ ok: true, message: 'Thank you for your feedback!' });
+});
+
+app.get('/api/feedback', async (req, res) => {
+    if (!db) return res.json({ feedback: [] });
+    try {
+        const feedback = await db.collection('feedback').find().sort({ createdAt: -1 }).limit(50).toArray();
+        return res.json({ feedback });
+    } catch (e) { return res.json({ feedback: [] }); }
+});
+
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });

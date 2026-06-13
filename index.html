@@ -577,6 +577,8 @@
         <!-- Footer -->
         <footer class="site-footer">
             <div class="footer-links">
+                <a href="#" id="feedbackLink">Feedback</a>
+                <span class="footer-dot"></span>
                 <a href="privacy.html">Privacy Policy</a>
                 <span class="footer-dot"></span>
                 <a href="terms.html">Terms of Service</a>
@@ -705,6 +707,57 @@
         <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
 
-    <script src="script.js?v=12"></script>
+    <!-- Feedback Modal -->
+    <div class="modal-overlay" id="feedbackModal" style="display:none;">
+        <div class="modal-card glass-card feedback-card">
+            <button class="modal-close" id="closeFeedbackModal">&times;</button>
+            <div class="feedback-header">
+                <div class="feedback-icon">
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                        <path d="M14 2C7.373 2 2 7.373 2 14s5.373 12 12 12 12-5.373 12-12S20.627 2 14 2z" stroke="url(#fbGrad)" stroke-width="1.5" fill="none"/>
+                        <path d="M10 12h8M10 16h5" stroke="url(#fbGrad)" stroke-width="1.5" stroke-linecap="round"/>
+                        <defs><linearGradient id="fbGrad" x1="2" y1="2" x2="26" y2="26"><stop stop-color="#a855f7"/><stop offset="1" stop-color="#ec4899"/></linearGradient></defs>
+                    </svg>
+                </div>
+                <h2 class="feedback-title">Send Feedback</h2>
+                <p class="feedback-sub">Help us improve Age Master</p>
+            </div>
+            <form id="feedbackForm">
+                <div class="fb-field">
+                    <label class="fb-label">Your Name (optional)</label>
+                    <input type="text" id="fbName" class="fb-input" placeholder="Enter your name">
+                </div>
+                <div class="fb-field">
+                    <label class="fb-label">Your Email (optional)</label>
+                    <input type="email" id="fbEmail" class="fb-input" placeholder="Enter your email">
+                </div>
+                <div class="fb-field">
+                    <label class="fb-label">Rating</label>
+                    <div class="fb-rating" id="fbRating">
+                        <button type="button" class="fb-star" data-val="1">★</button>
+                        <button type="button" class="fb-star" data-val="2">★</button>
+                        <button type="button" class="fb-star" data-val="3">★</button>
+                        <button type="button" class="fb-star" data-val="4">★</button>
+                        <button type="button" class="fb-star active" data-val="5">★</button>
+                    </div>
+                </div>
+                <div class="fb-field">
+                    <label class="fb-label">Your Feedback *</label>
+                    <textarea id="fbMessage" class="fb-input fb-textarea" placeholder="Tell us what you think, suggest features, or report issues..." rows="4" required></textarea>
+                </div>
+                <button type="submit" class="auth-btn fb-submit">
+                    <span>Submit Feedback</span>
+                </button>
+            </form>
+            <p class="fb-note">Your feedback helps us make Age Master better for everyone.</p>
+        </div>
+    </div>
+
+    <!-- Feedback Toast -->
+    <div class="toast" id="fbToast">
+        <span id="fbToastMsg">Thank you for your feedback!</span>
+    </div>
+
+    <script src="script.js?v=13"></script>
 </body>
 </html>
