@@ -109,10 +109,10 @@ app.get('/api/user/profile', async (req, res) => {
 });
 
 app.post('/api/certificates', async (req, res) => {
-    const { email, template, name } = req.body;
+    const { email, name } = req.body;
     if (!email) return res.status(400).json({ error: 'Email required' });
     if (db) {
-        try { await db.collection('certificates').insertOne({ email: email.toLowerCase(), template: template || 'default', name: name || 'User', createdAt: new Date() }); } catch (e) {}
+        try { await db.collection('certificates').insertOne({ email: email.toLowerCase(), name: name || 'User', createdAt: new Date() }); } catch (e) {}
     }
     return res.json({ ok: true });
 });

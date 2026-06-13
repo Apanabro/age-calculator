@@ -22,13 +22,7 @@
 
     var DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-    var TEMPLATES = {
-        default: { title: [0.6588, 0.3333, 0.9255], section: [0.6588, 0.3333, 0.9255], name: 'Default' },
-        wedding: { title: [0.96, 0.62, 0.04], section: [0.96, 0.62, 0.04], name: 'Wedding' },
-        retirement: { title: [0.12, 0.25, 0.69], section: [0.12, 0.25, 0.69], name: 'Retirement' },
-        baby: { title: [0.06, 0.73, 0.51], section: [0.06, 0.73, 0.51], name: 'Baby Milestone' },
-        birthday: { title: [0.54, 0.36, 0.96], section: [0.54, 0.36, 0.96], name: 'Birthday' }
-    };
+    var CERT_COLORS = { title: [0.6588, 0.3333, 0.9255], section: [0.6588, 0.3333, 0.9255] };
 
     var $ = function (id) { return document.getElementById(id); };
 
@@ -46,7 +40,6 @@
     var liveTimer = null;
     var dobDate = null;
     var userName = '';
-    var selectedTemplate = 'default';
 
     function getSession() {
         try { return JSON.parse(localStorage.getItem('ageMaster_session')); } catch (e) { return null; }
@@ -195,19 +188,9 @@
         $('premiumModal').style.display = 'none';
     }
 
-    function openTemplateModal() {
-        if (!isPremium()) { openPremiumModal(); return; }
-        $('templateModal').style.display = 'flex';
-    }
 
-    function closeTemplateModal() {
-        $('templateModal').style.display = 'none';
-    }
-
-    function generatePDF(template) {
+    function generatePDF() {
         if (!dobDate) return;
-        template = template || selectedTemplate;
-        var tpl = TEMPLATES[template] || TEMPLATES.default;
         var currentName = nameInput.value.trim() || userName || 'User';
         var today = new Date();
         var y = today.getFullYear() - dobDate.getFullYear();
@@ -241,20 +224,11 @@
         function ln(text) { lines.push(text); }
         var pdfW = 595;
 
-        var tr = tpl.title[0].toFixed(4) + ' ' + tpl.title[1].toFixed(4) + ' ' + tpl.title[2].toFixed(4);
-        var sr = tpl.section[0].toFixed(4) + ' ' + tpl.section[1].toFixed(4) + ' ' + tpl.section[2].toFixed(4);
+        var tr = CERT_COLORS.title[0].toFixed(4) + ' ' + CERT_COLORS.title[1].toFixed(4) + ' ' + CERT_COLORS.title[2].toFixed(4);
+        var sr = CERT_COLORS.section[0].toFixed(4) + ' ' + CERT_COLORS.section[1].toFixed(4) + ' ' + CERT_COLORS.section[2].toFixed(4);
 
-        var certTitle = template === 'wedding' ? 'Wedding Anniversary Certificate'
-            : template === 'retirement' ? 'Retirement Certificate'
-            : template === 'baby' ? 'Baby Milestone Certificate'
-            : template === 'birthday' ? 'Birthday Certificate'
-            : 'Age Master Certificate';
-
-        var subtitle = template === 'wedding' ? 'Celebrating Love & Togetherness'
-            : template === 'retirement' ? 'Honoring a Legacy of Dedication'
-            : template === 'baby' ? 'A Beautiful Journey Begins'
-            : template === 'birthday' ? 'Another Year of Amazing'
-            : 'Your Life, Precisely Measured';
+        var certTitle = 'Age Master Certificate';
+        var subtitle = 'Your Life, Precisely Measured';
 
         ln('BT');
         ln('/F1 26 Tf');
@@ -371,7 +345,7 @@
         var url = URL.createObjectURL(blob);
         var a = document.createElement('a');
         a.href = url;
-        a.download = 'AgeMaster_' + template + '_' + currentName.replace(/\s+/g, '_') + '.pdf';
+        a.download = 'AgeMaster_' + currentName.replace(/\s+/g, '_') + '.pdf';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -439,7 +413,7 @@
     $('pdfBtn').addEventListener('click', function () {
         if (!dobDate) return;
         if (!isPremium()) { openPremiumModal(); return; }
-        openTemplateModal();
+        generatePDF();
     });
 
     document.querySelectorAll('.plan-option').forEach(function (el) {
@@ -459,25 +433,11 @@
         if (pdfBadge) pdfBadge.style.display = 'none';
     });
 
-    document.querySelectorAll('.template-option').forEach(function (el) {
-        el.addEventListener('click', function () {
-            document.querySelectorAll('.template-option').forEach(function (o) { o.classList.remove('selected'); });
-            el.classList.add('selected');
-            selectedTemplate = el.getAttribute('data-template');
-        });
-    });
-
-    $('exportPdfBtn').addEventListener('click', function () {
-        closeTemplateModal();
-        generatePDF(selectedTemplate);
-    });
 
     $('closePremiumModal').addEventListener('click', closePremiumModal);
-    $('closeTemplateModal').addEventListener('click', closeTemplateModal);
     $('closeHdModal').addEventListener('click', function () { $('hdModal').style.display = 'none'; });
 
     $('premiumModal').addEventListener('click', function (e) { if (e.target === $('premiumModal')) closePremiumModal(); });
-    $('templateModal').addEventListener('click', function (e) { if (e.target === $('templateModal')) closeTemplateModal(); });
     $('hdModal').addEventListener('click', function (e) { if (e.target === $('hdModal')) $('hdModal').style.display = 'none'; });
 
     dobInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') calculateAge(); });
