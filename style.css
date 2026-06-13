@@ -719,6 +719,285 @@ body {
     border-radius: 2px;
 }
 
+/* ── Profile Button ── */
+.profile-btn {
+    text-decoration: none;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.profile-btn.premium-active {
+    border-color: rgba(236,72,153,0.3);
+    color: var(--pink);
+}
+
+/* ── Modal Overlay ── */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.2s ease;
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+.modal-card {
+    width: 100%;
+    max-width: 440px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 32px 24px;
+    position: relative;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+.modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: rgba(255,255,255,0.06);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+.modal-close:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+/* ── Premium Modal ── */
+.premium-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+.premium-crown {
+    margin-bottom: 12px;
+}
+.premium-title {
+    font-size: 22px;
+    font-weight: 900;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 4px;
+}
+.premium-sub {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+.plan-options {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+.plan-option {
+    flex: 1;
+    background: rgba(255,255,255,0.03);
+    border: 1.5px solid var(--surface-border);
+    border-radius: 12px;
+    padding: 16px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+}
+.plan-option.selected {
+    border-color: var(--purple);
+    background: rgba(168,85,247,0.08);
+}
+.plan-option.popular {
+    border-color: rgba(236,72,153,0.3);
+}
+.plan-option:hover {
+    border-color: var(--purple);
+}
+.plan-popular-badge {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--gradient);
+    color: #fff;
+    font-size: 8px;
+    font-weight: 800;
+    padding: 2px 10px;
+    border-radius: 10px;
+    letter-spacing: 0.8px;
+}
+.plan-price {
+    font-size: 22px;
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 2px;
+}
+.plan-price span {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+.plan-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin-bottom: 2px;
+}
+.plan-desc {
+    font-size: 10px;
+    color: var(--text-tertiary);
+}
+.premium-note {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-top: 12px;
+}
+
+/* ── Template Modal ── */
+.template-title {
+    font-size: 20px;
+    font-weight: 900;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 4px;
+}
+.template-sub {
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: 20px;
+}
+.template-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+.template-option {
+    background: rgba(255,255,255,0.03);
+    border: 1.5px solid var(--surface-border);
+    border-radius: 12px;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.template-option.selected {
+    border-color: var(--purple);
+    background: rgba(168,85,247,0.08);
+}
+.template-option:hover {
+    border-color: var(--purple);
+}
+.template-option span {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin-top: 8px;
+}
+.template-preview {
+    width: 100%;
+    height: 60px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+}
+.tp-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+}
+.tp-lines div {
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.4);
+}
+.tp-lines div:nth-child(1) { width: 70%; }
+.tp-lines div:nth-child(2) { width: 100%; }
+.tp-lines div:nth-child(3) { width: 50%; }
+
+/* ── HD Modal ── */
+.hd-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 16px;
+}
+.hd-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.03);
+    border: 1.5px solid var(--surface-border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    text-align: left;
+    width: 100%;
+    color: #fff;
+}
+.hd-option:hover {
+    border-color: var(--purple);
+}
+.hd-label {
+    font-size: 14px;
+    font-weight: 700;
+}
+.hd-desc {
+    font-size: 11px;
+    color: var(--text-tertiary);
+}
+.pro-tag {
+    margin-left: auto;
+    font-size: 9px;
+    font-weight: 800;
+    background: var(--gradient);
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 8px;
+    letter-spacing: 0.5px;
+}
+
+/* ── PRO Badge on action buttons ── */
+.pro-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    font-size: 7px;
+    font-weight: 800;
+    background: var(--gradient);
+    color: #fff;
+    padding: 2px 5px;
+    border-radius: 6px;
+    letter-spacing: 0.3px;
+}
+.action-btn { position: relative; }
+
 /* ── Print Styles ── */
 @media print {
     * { display: none !important; }

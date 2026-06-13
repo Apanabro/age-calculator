@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: age-master
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: DB_NAME
+        value: age_master

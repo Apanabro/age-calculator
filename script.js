@@ -1,7 +1,11 @@
 (function () {
     'use strict';
 
-    const ZODIAC = [
+    var API_BASE = (location.hostname === 'localhost' || location.protocol === 'file:')
+        ? 'http://localhost:3000/api'
+        : location.origin + '/api';
+
+    var ZODIAC = [
         { sign: 'Capricorn', start: [12, 22], end: [1, 19] },
         { sign: 'Aquarius', start: [1, 20], end: [2, 18] },
         { sign: 'Pisces', start: [2, 19], end: [3, 20] },
@@ -16,29 +20,78 @@
         { sign: 'Sagittarius', start: [11, 22], end: [12, 21] }
     ];
 
-    const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    var DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-    const $ = (id) => document.getElementById(id);
+    var TEMPLATES = {
+        default: { title: [0.6588, 0.3333, 0.9255], section: [0.6588, 0.3333, 0.9255], name: 'Default' },
+        wedding: { title: [0.96, 0.62, 0.04], section: [0.96, 0.62, 0.04], name: 'Wedding' },
+        retirement: { title: [0.12, 0.25, 0.69], section: [0.12, 0.25, 0.69], name: 'Retirement' },
+        baby: { title: [0.06, 0.73, 0.51], section: [0.06, 0.73, 0.51], name: 'Baby Milestone' },
+        birthday: { title: [0.54, 0.36, 0.96], section: [0.54, 0.36, 0.96], name: 'Birthday' }
+    };
 
-    const dobInput = $('dob');
-    const nameInput = $('userName');
-    const calcBtn = $('calculateBtn');
-    const resultsSection = $('resultsSection');
-    const errorToast = $('errorToast');
-    const errorMsg = $('errorMsg');
-    const toast = $('toast');
-    const toastMsg = $('toastMsg');
+    var $ = function (id) { return document.getElementById(id); };
 
-    let errorTimer = null;
-    let toastTimer = null;
-    let liveTimer = null;
-    let dobDate = null;
-    let userName = '';
+    var dobInput = $('dob');
+    var nameInput = $('userName');
+    var calcBtn = $('calculateBtn');
+    var resultsSection = $('resultsSection');
+    var errorToast = $('errorToast');
+    var errorMsg = $('errorMsg');
+    var toast = $('toast');
+    var toastMsg = $('toastMsg');
+
+    var errorTimer = null;
+    var toastTimer = null;
+    var liveTimer = null;
+    var dobDate = null;
+    var userName = '';
+    var selectedTemplate = 'default';
+
+    function getSession() {
+        try { return JSON.parse(localStorage.getItem('ageMaster_session')); } catch (e) { return null; }
+    }
+
+    function isPremium() {
+        if (isPremiumUnlocked()) return true;
+        var session = getSession();
+        if (session && session.email === 'jy306648@gmail.com') {
+            localStorage.setItem('ageMaster_premium', 'lifetime');
+            return true;
+        }
+        try {
+            var p = localStorage.getItem('ageMaster_premium');
+            return (p === 'true' || p === 'lifetime');
+        } catch (e) { return false; }
+    }
+
+    function isPremiumUnlocked() {
+        try {
+            var p = localStorage.getItem('ageMaster_premium');
+            return (p === 'true' || p === 'lifetime');
+        } catch (e) { return false; }
+    }
+
+    function init() {
+        var session = getSession();
+        var profileBtn = $('profileBtn');
+        if (session && session.loggedIn) {
+            profileBtn.href = 'dashboard.html';
+            profileBtn.classList.add('premium-active');
+            nameInput.value = session.name || '';
+        }
+
+        if (isPremiumUnlocked()) {
+            var pdfBadge = document.querySelector('.pdf-btn .pro-badge');
+            if (pdfBadge) pdfBadge.style.display = 'none';
+        }
+    }
 
     function getZodiac(month, day) {
-        for (const z of ZODIAC) {
-            const [sm, sd] = z.start;
-            const [em, ed] = z.end;
+        for (var i = 0; i < ZODIAC.length; i++) {
+            var z = ZODIAC[i];
+            var sm = z.start[0], sd = z.start[1];
+            var em = z.end[0], ed = z.end[1];
             if (sm === 12) {
                 if ((month === 12 && day >= sd) || (month === 1 && day <= ed)) return z.sign;
             } else {
@@ -52,14 +105,14 @@
         errorMsg.textContent = msg;
         errorToast.classList.add('show');
         clearTimeout(errorTimer);
-        errorTimer = setTimeout(() => errorToast.classList.remove('show'), 3000);
+        errorTimer = setTimeout(function () { errorToast.classList.remove('show'); }, 3000);
     }
 
     function showToast(msg) {
         toastMsg.textContent = msg;
         toast.classList.add('show');
         clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => toast.classList.remove('show'), 2000);
+        toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 2000);
     }
 
     function formatNumber(n) {
@@ -68,15 +121,12 @@
 
     function updateLiveMeter() {
         if (!dobDate) return;
-
-        const now = new Date();
-        const diff = now - dobDate;
-
-        const totalSeconds = Math.floor(diff / 1000);
-        const totalMinutes = Math.floor(totalSeconds / 60);
-        const totalHours = Math.floor(totalMinutes / 60);
-        const totalDays = Math.floor(totalHours / 24);
-
+        var now = new Date();
+        var diff = now - dobDate;
+        var totalSeconds = Math.floor(diff / 1000);
+        var totalMinutes = Math.floor(totalSeconds / 60);
+        var totalHours = Math.floor(totalMinutes / 60);
+        var totalDays = Math.floor(totalHours / 24);
         $('liveDays').textContent = formatNumber(totalDays);
         $('liveHours').textContent = formatNumber(totalHours);
         $('liveMinutes').textContent = formatNumber(totalMinutes);
@@ -86,97 +136,90 @@
     function calculateAge() {
         errorToast.classList.remove('show');
         clearTimeout(errorTimer);
-
-        const val = dobInput.value;
+        var val = dobInput.value;
         if (!val) {
             showError('Please select your date of birth');
             dobInput.focus();
             return;
         }
-
         dobDate = new Date(val + 'T00:00:00');
         userName = nameInput.value.trim() || 'User';
-        const today = new Date();
-
+        var today = new Date();
         if (dobDate >= today) {
             showError('Date of birth must be in the past');
             return;
         }
-
-        let years = today.getFullYear() - dobDate.getFullYear();
-        let months = today.getMonth() - dobDate.getMonth();
-        let days = today.getDate() - dobDate.getDate();
-
-        if (days < 0) {
-            months--;
-            const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
-            days += prevMonth.getDate();
-        }
-        if (months < 0) {
-            years--;
-            months += 12;
-        }
-
-        const totalDays = Math.floor((today - dobDate) / (1000 * 60 * 60 * 24));
-        const totalHours = totalDays * 24;
-        const totalMinutes = totalHours * 60;
-
+        var years = today.getFullYear() - dobDate.getFullYear();
+        var months = today.getMonth() - dobDate.getMonth();
+        var days = today.getDate() - dobDate.getDate();
+        if (days < 0) { months--; days += new Date(today.getFullYear(), today.getMonth(), 0).getDate(); }
+        if (months < 0) { years--; months += 12; }
+        var totalDays = Math.floor((today - dobDate) / (1000 * 60 * 60 * 24));
+        var totalHours = totalDays * 24;
+        var totalMinutes = totalHours * 60;
         $('meterYears').textContent = years;
         $('bdMonths').textContent = months;
         $('bdDays').textContent = days;
         $('bdHours').textContent = formatNumber(totalHours);
         $('bdMinutes').textContent = formatNumber(totalMinutes);
-
-        const circumference = 2 * Math.PI * 62;
-        const progress = Math.min(years / 100, 1);
+        var circumference = 2 * Math.PI * 62;
+        var progress = Math.min(years / 100, 1);
         document.querySelector('.meter-ring-progress').style.strokeDashoffset = circumference * (1 - progress);
-
         $('birthDay').textContent = DAYS[dobDate.getDay()];
         $('zodiacSign').textContent = getZodiac(dobDate.getMonth() + 1, dobDate.getDate());
         $('totalDays').textContent = formatNumber(totalDays);
-
-        const thisYearBday = new Date(today.getFullYear(), dobDate.getMonth(), dobDate.getDate());
-        let nextBday = thisYearBday;
-        if (today > thisYearBday) {
-            nextBday = new Date(today.getFullYear() + 1, dobDate.getMonth(), dobDate.getDate());
-        }
-        const daysUntil = Math.ceil((nextBday - today) / (1000 * 60 * 60 * 24));
-        const yearSpan = Math.ceil((nextBday - thisYearBday) / (1000 * 60 * 60 * 24)) || 365;
-        const bdayPercent = Math.round(((yearSpan - daysUntil) / yearSpan) * 100);
-
-        if (daysUntil === 0) {
-            $('nextBirthday').textContent = "It's Today!";
-        } else if (daysUntil === 1) {
-            $('nextBirthday').textContent = 'Tomorrow!';
-        } else {
-            $('nextBirthday').textContent = daysUntil + ' days away';
-        }
+        var thisYearBday = new Date(today.getFullYear(), dobDate.getMonth(), dobDate.getDate());
+        var nextBday = thisYearBday;
+        if (today > thisYearBday) { nextBday = new Date(today.getFullYear() + 1, dobDate.getMonth(), dobDate.getDate()); }
+        var daysUntil = Math.ceil((nextBday - today) / (1000 * 60 * 60 * 24));
+        var yearSpan = Math.ceil((nextBday - thisYearBday) / (1000 * 60 * 60 * 24)) || 365;
+        var bdayPercent = Math.round(((yearSpan - daysUntil) / yearSpan) * 100);
+        if (daysUntil === 0) { $('nextBirthday').textContent = "It's Today!"; }
+        else if (daysUntil === 1) { $('nextBirthday').textContent = 'Tomorrow!'; }
+        else { $('nextBirthday').textContent = daysUntil + ' days away'; }
         $('countdownFill').style.width = bdayPercent + '%';
-
         updateLiveMeter();
-
         if (liveTimer) clearInterval(liveTimer);
         liveTimer = setInterval(updateLiveMeter, 1000);
-
         resultsSection.classList.add('show');
         resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    function generatePDF() {
-        if (!dobDate) return;
+    function openPremiumModal() {
+        $('premiumModal').style.display = 'flex';
+        document.querySelectorAll('.plan-option').forEach(function (el) { el.classList.remove('selected'); });
+        document.querySelector('.plan-option[data-plan="monthly"]').classList.add('selected');
+    }
 
+    function closePremiumModal() {
+        $('premiumModal').style.display = 'none';
+    }
+
+    function openTemplateModal() {
+        if (!isPremium()) { openPremiumModal(); return; }
+        $('templateModal').style.display = 'flex';
+    }
+
+    function closeTemplateModal() {
+        $('templateModal').style.display = 'none';
+    }
+
+    function generatePDF(template) {
+        if (!dobDate) return;
+        template = template || selectedTemplate;
+        var tpl = TEMPLATES[template] || TEMPLATES.default;
         var currentName = nameInput.value.trim() || userName || 'User';
-        const today = new Date();
-        let y = today.getFullYear() - dobDate.getFullYear();
-        let m = today.getMonth() - dobDate.getMonth();
-        let d = today.getDate() - dobDate.getDate();
+        var today = new Date();
+        var y = today.getFullYear() - dobDate.getFullYear();
+        var m = today.getMonth() - dobDate.getMonth();
+        var d = today.getDate() - dobDate.getDate();
         if (d < 0) { m--; d += new Date(today.getFullYear(), today.getMonth(), 0).getDate(); }
         if (m < 0) { y--; m += 12; }
-        const totalDays = Math.floor((today - dobDate) / 86400000);
-        const dobStr = dobDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-        const zodiac = getZodiac(dobDate.getMonth() + 1, dobDate.getDate());
-        const bornDay = DAYS[dobDate.getDay()];
-        const now = today.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        var totalDays = Math.floor((today - dobDate) / 86400000);
+        var dobStr = dobDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        var zodiac = getZodiac(dobDate.getMonth() + 1, dobDate.getDate());
+        var bornDay = DAYS[dobDate.getDay()];
+        var now = today.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
         var measurer = document.createElement('canvas').getContext('2d');
         function textWidth(text, size) {
@@ -196,33 +239,47 @@
 
         var lines = [];
         function ln(text) { lines.push(text); }
-
         var pdfW = 595;
 
+        var tr = tpl.title[0].toFixed(4) + ' ' + tpl.title[1].toFixed(4) + ' ' + tpl.title[2].toFixed(4);
+        var sr = tpl.section[0].toFixed(4) + ' ' + tpl.section[1].toFixed(4) + ' ' + tpl.section[2].toFixed(4);
+
+        var certTitle = template === 'wedding' ? 'Wedding Anniversary Certificate'
+            : template === 'retirement' ? 'Retirement Certificate'
+            : template === 'baby' ? 'Baby Milestone Certificate'
+            : template === 'birthday' ? 'Birthday Certificate'
+            : 'Age Master Certificate';
+
+        var subtitle = template === 'wedding' ? 'Celebrating Love & Togetherness'
+            : template === 'retirement' ? 'Honoring a Legacy of Dedication'
+            : template === 'baby' ? 'A Beautiful Journey Begins'
+            : template === 'birthday' ? 'Another Year of Amazing'
+            : 'Your Life, Precisely Measured';
+
         ln('BT');
-        ln('/F1 28 Tf');
-        ln('0.6588 0.3333 0.9255 rg');
-        var tw28 = textWidth('Age Master Certificate', 28);
+        ln('/F1 26 Tf');
+        ln(tr + ' rg');
+        var tw28 = textWidth(certTitle, 26);
         ln(((pdfW - tw28) / 2).toFixed(1) + ' 770 Td');
-        ln('(Age Master Certificate) Tj');
+        ln('(' + certTitle + ') Tj');
         ln('ET');
 
         ln('BT');
-        ln('/F1 13 Tf');
+        ln('/F1 12 Tf');
         ln('0.4 0.4 0.4 rg');
-        var tw13 = textWidth('Your Life, Precisely Measured', 13);
-        ln(((pdfW - tw13) / 2).toFixed(1) + ' 748 Td');
-        ln('(Your Life, Precisely Measured) Tj');
+        var tw13 = textWidth(subtitle, 12);
+        ln(((pdfW - tw13) / 2).toFixed(1) + ' 750 Td');
+        ln('(' + subtitle + ') Tj');
         ln('ET');
 
         ln('0.85 0.85 0.85 RG');
         ln('0.6 w');
-        ln('40 735 m 560 735 l S');
+        ln('40 737 m 560 737 l S');
 
         function sh(text, yPos) {
             ln('BT');
             ln('/F1 10 Tf');
-            ln('0.6588 0.3333 0.9255 rg');
+            ln(sr + ' rg');
             ln('50 ' + yPos + ' Td');
             ln('(' + text + ') Tj');
             ln('ET');
@@ -235,7 +292,6 @@
             ln('50 ' + yPos + ' Td');
             ln('(' + label + ') Tj');
             ln('ET');
-
             var vw = textWidth(value, 13);
             ln('BT');
             ln('/F1 13 Tf');
@@ -243,7 +299,6 @@
             ln(((pdfW - 50 - vw).toFixed(1)) + ' ' + yPos + ' Td');
             ln('(' + value + ') Tj');
             ln('ET');
-
             ln('0.9 0.9 0.9 RG');
             ln('0.3 w');
             ln('50 ' + (yPos - 12) + ' m 560 ' + (yPos - 12) + ' l S');
@@ -265,6 +320,17 @@
         dr('Total Hours', formatNumber(totalDays * 24), 374);
         dr('Total Minutes', formatNumber(totalDays * 24 * 60), 344);
 
+        if (!isPremium()) {
+            ln('BT');
+            ln('/F1 14 Tf');
+            ln('0.8 0.8 0.8 rg');
+            var wmText = 'Age Master - Free Version';
+            var wmW = textWidth(wmText, 14);
+            ln(((pdfW - wmW) / 2).toFixed(1) + ' 460 Td');
+            ln('(' + wmText + ') Tj');
+            ln('ET');
+        }
+
         ln('0.85 0.85 0.85 RG');
         ln('0.6 w');
         ln('40 320 m 560 320 l S');
@@ -279,7 +345,6 @@
         ln('ET');
 
         var stream = lines.join('\n');
-
         setObj(catalog, '<< /Type /Catalog /Pages ' + pages + ' 0 R >>');
         setObj(pages, '<< /Type /Pages /Kids [' + page + ' 0 R] /Count 1 >>');
         setObj(font, '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
@@ -292,7 +357,6 @@
             offsetMap.push(pdf.length);
             pdf += (i + 1) + ' 0 obj\n' + objs[i] + '\nendobj\n\n';
         }
-
         var xrefStart = pdf.length;
         pdf += 'xref\n';
         pdf += '0 ' + (objs.length + 1) + '\n';
@@ -300,7 +364,6 @@
         for (var j = 0; j < offsetMap.length; j++) {
             pdf += String(offsetMap[j]).padStart(10, '0') + ' 00000 n \n';
         }
-
         pdf += 'trailer\n<< /Size ' + (objs.length + 1) + ' /Root ' + catalog + ' 0 R >>\n';
         pdf += 'startxref\n' + xrefStart + '\n%%EOF';
 
@@ -308,7 +371,7 @@
         var url = URL.createObjectURL(blob);
         var a = document.createElement('a');
         a.href = url;
-        a.download = 'AgeMaster_Certificate_' + currentName.replace(/\s+/g, '_') + '.pdf';
+        a.download = 'AgeMaster_' + template + '_' + currentName.replace(/\s+/g, '_') + '.pdf';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -318,23 +381,21 @@
 
     function shareResults() {
         if (!dobDate) return;
-        const today = new Date();
-        let y = today.getFullYear() - dobDate.getFullYear();
-        let m = today.getMonth() - dobDate.getMonth();
-        let d = today.getDate() - dobDate.getDate();
+        var today = new Date();
+        var y = today.getFullYear() - dobDate.getFullYear();
+        var m = today.getMonth() - dobDate.getMonth();
+        var d = today.getDate() - dobDate.getDate();
         if (d < 0) { m--; d += new Date(today.getFullYear(), today.getMonth(), 0).getDate(); }
         if (m < 0) { y--; m += 12; }
-
-        const text = `Age Master Results\n\n` +
-            `Name: ${userName}\n` +
-            `DOB: ${dobDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}\n` +
-            `Age: ${y} years, ${m} months, ${d} days\n` +
-            `Zodiac: ${getZodiac(dobDate.getMonth() + 1, dobDate.getDate())}\n` +
-            `Born on: ${DAYS[dobDate.getDay()]}\n\n` +
-            `Calculate yours → apanabro.github.io/age-calculator/`;
-
+        var text = 'Age Master Results\n\n' +
+            'Name: ' + userName + '\n' +
+            'DOB: ' + dobDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) + '\n' +
+            'Age: ' + y + ' years, ' + m + ' months, ' + d + ' days\n' +
+            'Zodiac: ' + getZodiac(dobDate.getMonth() + 1, dobDate.getDate()) + '\n' +
+            'Born on: ' + DAYS[dobDate.getDay()] + '\n\n' +
+            'Calculate yours -> apanabro.github.io/age-calculator/';
         if (navigator.share) {
-            navigator.share({ title: 'Age Master Results', text }).catch(() => {});
+            navigator.share({ title: 'Age Master Results', text: text }).catch(function () {});
         } else {
             copyToClipboard(text);
         }
@@ -342,27 +403,26 @@
 
     function copyResults() {
         if (!dobDate) return;
-        const today = new Date();
-        let y = today.getFullYear() - dobDate.getFullYear();
-        let m = today.getMonth() - dobDate.getMonth();
-        let d = today.getDate() - dobDate.getDate();
+        var today = new Date();
+        var y = today.getFullYear() - dobDate.getFullYear();
+        var m = today.getMonth() - dobDate.getMonth();
+        var d = today.getDate() - dobDate.getDate();
         if (d < 0) { m--; d += new Date(today.getFullYear(), today.getMonth(), 0).getDate(); }
         if (m < 0) { y--; m += 12; }
-
-        const text = `Age Master: ${userName}\n${y}y ${m}m ${d}d\nZodiac: ${getZodiac(dobDate.getMonth() + 1, dobDate.getDate())}`;
+        var text = 'Age Master: ' + userName + '\n' + y + 'y ' + m + 'm ' + d + 'd\nZodiac: ' + getZodiac(dobDate.getMonth() + 1, dobDate.getDate());
         copyToClipboard(text);
     }
 
     function copyToClipboard(text) {
         if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(text).then(() => showToast('Copied!')).catch(() => fallbackCopy(text));
+            navigator.clipboard.writeText(text).then(function () { showToast('Copied!'); }).catch(function () { fallbackCopy(text); });
         } else {
             fallbackCopy(text);
         }
     }
 
     function fallbackCopy(text) {
-        const ta = document.createElement('textarea');
+        var ta = document.createElement('textarea');
         ta.value = text;
         ta.style.cssText = 'position:fixed;left:-9999px';
         document.body.appendChild(ta);
@@ -372,22 +432,67 @@
     }
 
     calcBtn.addEventListener('click', calculateAge);
-    $('pdfBtn').addEventListener('click', generatePDF);
     $('shareBtn').addEventListener('click', shareResults);
     $('copyBtn').addEventListener('click', copyResults);
     $('topShareBtn').addEventListener('click', shareResults);
 
-    dobInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') calculateAge(); });
-    dobInput.addEventListener('change', () => { if (dobInput.value) calculateAge(); });
+    $('pdfBtn').addEventListener('click', function () {
+        if (!dobDate) return;
+        if (!isPremium()) { openPremiumModal(); return; }
+        openTemplateModal();
+    });
 
-    document.querySelectorAll('.nav-item').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.plan-option').forEach(function (el) {
+        el.addEventListener('click', function () {
+            document.querySelectorAll('.plan-option').forEach(function (o) { o.classList.remove('selected'); });
+            el.classList.add('selected');
+        });
+    });
+
+    $('unlockBtn').addEventListener('click', function () {
+        var selected = document.querySelector('.plan-option.selected');
+        var plan = selected ? selected.getAttribute('data-plan') : 'monthly';
+        localStorage.setItem('ageMaster_premium', plan === 'single' ? 'true' : 'lifetime');
+        closePremiumModal();
+        showToast('Premium unlocked!');
+        var pdfBadge = document.querySelector('.pdf-btn .pro-badge');
+        if (pdfBadge) pdfBadge.style.display = 'none';
+    });
+
+    document.querySelectorAll('.template-option').forEach(function (el) {
+        el.addEventListener('click', function () {
+            document.querySelectorAll('.template-option').forEach(function (o) { o.classList.remove('selected'); });
+            el.classList.add('selected');
+            selectedTemplate = el.getAttribute('data-template');
+        });
+    });
+
+    $('exportPdfBtn').addEventListener('click', function () {
+        closeTemplateModal();
+        generatePDF(selectedTemplate);
+    });
+
+    $('closePremiumModal').addEventListener('click', closePremiumModal);
+    $('closeTemplateModal').addEventListener('click', closeTemplateModal);
+    $('closeHdModal').addEventListener('click', function () { $('hdModal').style.display = 'none'; });
+
+    $('premiumModal').addEventListener('click', function (e) { if (e.target === $('premiumModal')) closePremiumModal(); });
+    $('templateModal').addEventListener('click', function (e) { if (e.target === $('templateModal')) closeTemplateModal(); });
+    $('hdModal').addEventListener('click', function (e) { if (e.target === $('hdModal')) $('hdModal').style.display = 'none'; });
+
+    dobInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') calculateAge(); });
+    dobInput.addEventListener('change', function () { if (dobInput.value) calculateAge(); });
+
+    document.querySelectorAll('.nav-item').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            document.querySelectorAll('.nav-item').forEach(function (b) { b.classList.remove('active'); });
             btn.classList.add('active');
         });
     });
 
     if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+        window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
     }
+
+    init();
 })();
