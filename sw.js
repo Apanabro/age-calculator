@@ -1,4 +1,4 @@
-const CACHE_NAME = 'age-calc-v5';
+const CACHE_NAME = 'age-calc-v6';
 const ASSETS = [
     '/',
     '/index.html',

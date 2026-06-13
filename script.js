@@ -405,6 +405,34 @@
         document.body.removeChild(ta);
     }
 
+    function showCertPreview() {
+        if (!dobDate) return;
+        var currentName = nameInput.value.trim() || userName || 'User';
+        var today = new Date();
+        var y = today.getFullYear() - dobDate.getFullYear();
+        var m = today.getMonth() - dobDate.getMonth();
+        var d = today.getDate() - dobDate.getDate();
+        if (d < 0) { m--; d += new Date(today.getFullYear(), today.getMonth(), 0).getDate(); }
+        if (m < 0) { y--; m += 12; }
+        var totalDays = Math.floor((today - dobDate) / 86400000);
+        var dobStr = dobDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        var zodiac = getZodiac(dobDate.getMonth() + 1, dobDate.getDate());
+        var bornDay = DAYS[dobDate.getDay()];
+
+        $('cpName').textContent = currentName;
+        $('cpDob').textContent = dobStr;
+        $('cpDay').textContent = bornDay;
+        $('cpZodiac').textContent = zodiac;
+        $('cpYears').textContent = y;
+        $('cpMonths').textContent = m;
+        $('cpDays').textContent = d;
+        $('cpTotalDays').textContent = formatNumber(totalDays);
+        $('cpTotalHours').textContent = formatNumber(totalDays * 24);
+        $('cpTotalMinutes').textContent = formatNumber(totalDays * 24 * 60);
+
+        $('certPreviewModal').style.display = 'flex';
+    }
+
     calcBtn.addEventListener('click', calculateAge);
     $('shareBtn').addEventListener('click', shareResults);
     $('copyBtn').addEventListener('click', copyResults);
@@ -413,7 +441,7 @@
     $('pdfBtn').addEventListener('click', function () {
         if (!dobDate) return;
         if (!isPremium()) { openPremiumModal(); return; }
-        generatePDF();
+        showCertPreview();
     });
 
     document.querySelectorAll('.plan-option').forEach(function (el) {
@@ -436,8 +464,11 @@
 
     $('closePremiumModal').addEventListener('click', closePremiumModal);
     $('closeHdModal').addEventListener('click', function () { $('hdModal').style.display = 'none'; });
+    $('closeCertPreview').addEventListener('click', function () { $('certPreviewModal').style.display = 'none'; });
+    $('certDownloadBtn').addEventListener('click', function () { $('certPreviewModal').style.display = 'none'; generatePDF(); });
 
     $('premiumModal').addEventListener('click', function (e) { if (e.target === $('premiumModal')) closePremiumModal(); });
+    $('certPreviewModal').addEventListener('click', function (e) { if (e.target === $('certPreviewModal')) $('certPreviewModal').style.display = 'none'; });
     $('hdModal').addEventListener('click', function (e) { if (e.target === $('hdModal')) $('hdModal').style.display = 'none'; });
 
     dobInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') calculateAge(); });
