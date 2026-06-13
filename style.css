@@ -459,7 +459,6 @@ body {
     grid-template-columns: 1fr 1fr 1fr;
     gap: 12px;
     margin-top: 20px;
-    animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .action-btn {
@@ -520,7 +519,7 @@ body {
 
 /* ── Share Toast ── */
 .share-toast {
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     gap: 10px;
@@ -532,16 +531,10 @@ body {
     font-size: 14px;
     font-weight: 600;
     margin-top: 12px;
-    opacity: 0;
-    transform: translateY(-8px);
-    pointer-events: none;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .share-toast.show {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
+    display: flex;
 }
 
 /* ── Footer ── */
