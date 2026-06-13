@@ -459,9 +459,7 @@ body {
     grid-template-columns: 1fr 1fr 1fr;
     gap: 12px;
     margin-top: 20px;
-    opacity: 0;
-    transform: translateY(12px);
-    animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.75s both;
+    animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .action-btn {
