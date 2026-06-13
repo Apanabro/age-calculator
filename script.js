@@ -28,7 +28,6 @@
     const shareBtn = $('shareBtn');
     const copyBtn = $('copyBtn');
     const results = $('results');
-    const actionBtns = $('actionButtons');
     const errorToast = $('errorToast');
     const errorMsg = $('errorMsg');
     const shareToast = $('shareToast');
@@ -170,7 +169,6 @@
         };
 
         results.classList.add('show');
-        actionBtns.style.display = '';
         results.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
