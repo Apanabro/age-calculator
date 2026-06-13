@@ -1322,3 +1322,41 @@ body {
     color: var(--text-secondary);
     font-weight: 400;
 }
+
+/* ── Related Articles Section ── */
+.related-section {
+    margin-top: 32px;
+}
+.related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+}
+.related-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px 16px;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+.related-card:hover {
+    border-color: rgba(168,85,247,0.3);
+    transform: translateY(-2px);
+}
+.related-icon {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+.related-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+.related-desc {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    line-height: 1.4;
+}

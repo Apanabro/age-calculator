@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#121222">
+    <meta name="description" content="Free date difference calculator. Calculate the exact number of years, months, weeks, and days between any two dates.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://age-master-app.netlify.app/date-difference-calculator.html">
+    <meta property="og:title" content="Date Difference Calculator — Calculate Days Between Dates">
+    <meta property="og:description" content="Calculate the exact number of years, months, weeks, and days between any two dates.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://age-master-app.netlify.app/date-difference-calculator.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>Date Difference Calculator — Calculate Days Between Dates | Age Master</title>
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #121222;
+            --bg-light: #1a1a2e;
+            --surface: rgba(255, 255, 255, 0.05);
+            --surface-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.55);
+            --text-tertiary: rgba(255, 255, 255, 0.3);
+            --purple: #a855f7;
+            --pink: #ec4899;
+            --gradient: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+            --radius: 16px;
+            --radius-sm: 12px;
+            --top-bar-h: 56px;
+            --safe-top: env(safe-area-inset-top, 0px);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { -webkit-text-size-adjust: 100%; -webkit-font-smoothing: antialiased; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow-x: hidden;
+            padding-top: var(--safe-top);
+            padding-bottom: var(--safe-bottom);
+        }
+        .bg-glow {
+            position: fixed;
+            top: -25%;
+            left: -15%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .bg-glow.glow-2 {
+            top: auto;
+            bottom: -25%;
+            left: auto;
+            right: -15%;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.1) 0%, transparent 70%);
+        }
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--top-bar-h);
+            padding-top: var(--safe-top);
+            background: rgba(18, 18, 34, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--surface-border);
+            z-index: 100;
+        }
+        .top-bar-inner {
+            max-width: 600px;
+            margin: 0 auto;
+            height: var(--top-bar-h);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+        }
+        .top-bar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--gradient);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .logo-text {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .back-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: var(--surface);
+            border-radius: 10px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .back-btn:active { transform: scale(0.92); }
+        .main-content {
+            position: relative;
+            z-index: 1;
+            max-width: 680px;
+            margin: 0 auto;
+            padding: calc(var(--top-bar-h) + 32px) 24px 80px;
+        }
+        .page-title {
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 6px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.15;
+        }
+        .page-subtitle {
+            font-size: 14px;
+            color: var(--text-tertiary);
+            font-weight: 500;
+            margin-bottom: 32px;
+        }
+        .content-section {
+            margin-bottom: 32px;
+        }
+        .content-section h2 {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            padding-left: 14px;
+            border-left: 3px solid var(--purple);
+        }
+        .content-section p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+        .content-section ul {
+            padding-left: 24px;
+            margin-bottom: 16px;
+        }
+        .content-section li {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 8px;
+        }
+        .content-section strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .cta-card {
+            background: var(--surface);
+            border: 1px solid var(--surface-border);
+            border-radius: var(--radius);
+            padding: 24px;
+            text-align: center;
+            margin: 32px 0;
+        }
+        .cta-card h3 {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .cta-card p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .cta-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .related-links {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--surface-border);
+        }
+        .related-links h3 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+        .related-links ul { list-style: none; padding: 0; }
+        .related-links li { margin-bottom: 12px; }
+        .related-links a {
+            color: var(--purple);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .related-links a:hover { color: var(--pink); }
+        .legal-footer {
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid var(--surface-border);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+        }
+        .legal-footer a {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .legal-footer a:hover { color: var(--purple); }
+        @media (max-width: 480px) {
+            .main-content { padding-left: 18px; padding-right: 18px; }
+            .page-title { font-size: 26px; }
+        }
+    </style>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "How to Calculate the Difference Between Two Dates",
+        "description": "Learn how to calculate the exact number of years, months, weeks, and days between any two dates.",
+        "step": [
+            {
+                "@type": "HowToStep",
+                "name": "Select Start Date",
+                "text": "Pick the first date from the calendar."
+            },
+            {
+                "@type": "HowToStep",
+                "name": "Select End Date",
+                "text": "Pick the second date from the calendar."
+            },
+            {
+                "@type": "HowToStep",
+                "name": "View Results",
+                "text": "See the difference in years, months, days, weeks, and total hours."
+            }
+        ]
+    }
+    </script>
+</head>
+<body>
+    <header class="top-bar">
+        <div class="top-bar-inner">
+            <a href="index.html" class="top-bar-logo" aria-label="Age Master Home">
+                <div class="logo-icon">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <rect x="2" y="4" width="16" height="14" rx="3" stroke="white" stroke-width="1.5" fill="none"/>
+                        <line x1="2" y1="8" x2="18" y2="8" stroke="white" stroke-width="1.3"/>
+                        <line x1="6" y1="2" x2="6" y2="5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                        <line x1="14" y1="2" x2="14" y2="5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                        <circle cx="10" cy="13" r="2.5" stroke="white" stroke-width="1.3" fill="none"/>
+                        <line x1="10" y1="11.5" x2="10" y2="13" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+                        <line x1="10" y1="13" x2="11.5" y2="14" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <span class="logo-text">Age Master</span>
+            </a>
+            <a href="index.html" class="back-btn" aria-label="Go back">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M12 4L6 10L12 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </a>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <h1 class="page-title">Date Difference Calculator</h1>
+        <p class="page-subtitle">Calculate the exact time between any two dates</p>
+
+        <div class="cta-card">
+            <h3>Calculate Date Difference</h3>
+            <p>Enter two dates and see the exact difference in years, months, days, and hours.</p>
+            <a href="index.html" class="cta-btn">
+                <span>Open Calculator</span>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+        </div>
+
+        <section class="content-section">
+            <h2>What Is a Date Difference Calculator?</h2>
+            <p>A date difference calculator computes the exact time period between two dates. Unlike simply subtracting years, it accounts for <strong>variable month lengths, leap years, and precise day counts</strong>.</p>
+            <p>This tool is useful for project planning, relationship milestones, historical research, and everyday curiosity.</p>
+        </section>
+
+        <section class="content-section">
+            <h2>How to Use</h2>
+            <ul>
+                <li><strong>Enter Start Date</strong> — Select the first date (e.g., project start date).</li>
+                <li><strong>Enter End Date</strong> — Select the second date (e.g., project deadline).</li>
+                <li><strong>View Results</strong> — See the difference in multiple formats: years, months, days, weeks, and total hours.</li>
+            </ul>
+        </section>
+
+        <section class="content-section">
+            <h2>Common Use Cases</h2>
+            <ul>
+                <li><strong>Project Management</strong> — Calculate days until a deadline.</li>
+                <li><strong>Relationships</strong> — Find how long you've been with your partner.</li>
+                <li><strong>History</strong> — Determine time between historical events.</li>
+                <li><strong>Personal Goals</strong> — Track progress toward a future date.</li>
+                <li><strong>Travel Planning</strong> — Count days until your vacation.</li>
+            </ul>
+        </section>
+
+        <section class="content-section">
+            <h2>Example Calculation</h2>
+            <p>If you start a job on January 15, 2024 and want to know how long you've worked by June 13, 2026:</p>
+            <ul>
+                <li>Years: 2</li>
+                <li>Months: 4</li>
+                <li>Days: 29</li>
+                <li>Total Days: 880</li>
+                <li>Total Hours: 21,120</li>
+            </ul>
+            <p>The calculator handles all the complexity of varying month lengths and leap years automatically.</p>
+        </section>
+
+        <div class="related-links">
+            <h3>Related Articles</h3>
+            <ul>
+                <li><a href="how-to-calculate-age.html">How to Calculate Your Exact Age</a></li>
+                <li><a href="birthday-countdown.html">Birthday Countdown Calculator</a></li>
+                <li><a href="zodiac-sign-calculator.html">Zodiac Sign Calculator</a></li>
+                <li><a href="birthstone-guide.html">Birthstone Guide</a></li>
+            </ul>
+        </div>
+
+        <footer class="legal-footer">
+            <a href="index.html">Back to App</a>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms of Service</a>
+        </footer>
+    </main>
+
+    <div class="bg-glow"></div>
+    <div class="bg-glow glow-2"></div>
+</body>
+</html>
