@@ -178,98 +178,142 @@
         const bornDay = DAYS[dobDate.getDay()];
         const now = today.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
-        var canvas = document.createElement('canvas');
-        var scale = 3;
-        var cw = 600, ch = 850;
-        canvas.width = cw * scale;
-        canvas.height = ch * scale;
-        var ctx = canvas.getContext('2d');
-        ctx.scale(scale, scale);
-
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, cw, ch);
-
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '900 28px Inter, -apple-system, sans-serif';
-        ctx.textAlign = 'center';
-        var titleGrd = ctx.createLinearGradient(180, 50, 420, 80);
-        titleGrd.addColorStop(0, '#a855f7');
-        titleGrd.addColorStop(1, '#ec4899');
-        ctx.fillStyle = titleGrd;
-        ctx.fillText('Age Master Certificate', cw / 2, 65);
-
-        ctx.fillStyle = 'rgba(0,0,0,0.4)';
-        ctx.font = '400 13px Inter, -apple-system, sans-serif';
-        ctx.fillText('Your Life, Precisely Measured', cw / 2, 90);
-
-        ctx.strokeStyle = 'rgba(0,0,0,0.08)';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(40, 105);
-        ctx.lineTo(cw - 40, 105);
-        ctx.stroke();
-
-        function sectionHeader(text, yPos) {
-            ctx.fillStyle = '#a855f7';
-            ctx.font = '700 11px Inter, -apple-system, sans-serif';
-            ctx.textAlign = 'left';
-            ctx.fillText(text, 50, yPos);
+        var measurer = document.createElement('canvas').getContext('2d');
+        function textWidth(text, size) {
+            measurer.font = size + 'px Helvetica, Arial, sans-serif';
+            return measurer.measureText(text).width;
         }
 
-        function dataRow(label, value, yPos) {
-            ctx.fillStyle = 'rgba(0,0,0,0.4)';
-            ctx.font = '400 14px Inter, -apple-system, sans-serif';
-            ctx.textAlign = 'left';
-            ctx.fillText(label, 50, yPos);
-            ctx.fillStyle = '#1a1a2e';
-            ctx.font = '700 15px Inter, -apple-system, sans-serif';
-            ctx.textAlign = 'right';
-            ctx.fillText(value, cw - 50, yPos);
-            ctx.strokeStyle = 'rgba(0,0,0,0.06)';
-            ctx.beginPath();
-            ctx.moveTo(50, yPos + 10);
-            ctx.lineTo(cw - 50, yPos + 10);
-            ctx.stroke();
+        var objs = [];
+        function obj() { objs.push(''); return objs.length; }
+        function setObj(n, content) { objs[n - 1] = content; }
+
+        var catalog = obj();
+        var pages = obj();
+        var font = obj();
+        var page = obj();
+        var content = obj();
+
+        var lines = [];
+        function ln(text) { lines.push(text); }
+
+        var pdfW = 595;
+
+        ln('BT');
+        ln('/F1 28 Tf');
+        ln('0.6588 0.3333 0.9255 rg');
+        var tw28 = textWidth('Age Master Certificate', 28);
+        ln(((pdfW - tw28) / 2).toFixed(1) + ' 770 Td');
+        ln('(Age Master Certificate) Tj');
+        ln('ET');
+
+        ln('BT');
+        ln('/F1 13 Tf');
+        ln('0.4 0.4 0.4 rg');
+        var tw13 = textWidth('Your Life, Precisely Measured', 13);
+        ln(((pdfW - tw13) / 2).toFixed(1) + ' 748 Td');
+        ln('(Your Life, Precisely Measured) Tj');
+        ln('ET');
+
+        ln('0.85 0.85 0.85 RG');
+        ln('0.6 w');
+        ln('40 735 m 560 735 l S');
+
+        function sh(text, yPos) {
+            ln('BT');
+            ln('/F1 10 Tf');
+            ln('0.6588 0.3333 0.9255 rg');
+            ln('50 ' + yPos + ' Td');
+            ln('(' + text + ') Tj');
+            ln('ET');
         }
 
-        sectionHeader('PERSONAL DETAILS', 140);
-        dataRow('Name', currentName, 165);
-        dataRow('Date of Birth', dobStr, 195);
-        dataRow('Day of Birth', bornDay, 225);
-        dataRow('Zodiac Sign', zodiac, 255);
+        function dr(label, value, yPos) {
+            ln('BT');
+            ln('/F1 12 Tf');
+            ln('0.5 0.5 0.5 rg');
+            ln('50 ' + yPos + ' Td');
+            ln('(' + label + ') Tj');
+            ln('ET');
 
-        sectionHeader('CURRENT AGE', 295);
-        dataRow('Years', String(y), 320);
-        dataRow('Months', String(m), 350);
-        dataRow('Days', String(d), 380);
+            var vw = textWidth(value, 13);
+            ln('BT');
+            ln('/F1 13 Tf');
+            ln('0.1 0.1 0.18 rg');
+            ln(((pdfW - 50 - vw).toFixed(1)) + ' ' + yPos + ' Td');
+            ln('(' + value + ') Tj');
+            ln('ET');
 
-        sectionHeader('LIFE STATS', 420);
-        dataRow('Total Days', formatNumber(totalDays), 445);
-        dataRow('Total Hours', formatNumber(totalDays * 24), 475);
-        dataRow('Total Minutes', formatNumber(totalDays * 24 * 60), 505);
+            ln('0.9 0.9 0.9 RG');
+            ln('0.3 w');
+            ln('50 ' + (yPos - 12) + ' m 560 ' + (yPos - 12) + ' l S');
+        }
 
-        ctx.strokeStyle = 'rgba(0,0,0,0.08)';
-        ctx.beginPath();
-        ctx.moveTo(40, 540);
-        ctx.lineTo(cw - 40, 540);
-        ctx.stroke();
+        sh('PERSONAL DETAILS', 700);
+        dr('Name', currentName, 678);
+        dr('Date of Birth', dobStr, 648);
+        dr('Day of Birth', bornDay, 618);
+        dr('Zodiac Sign', zodiac, 588);
 
-        ctx.fillStyle = 'rgba(0,0,0,0.25)';
-        ctx.font = '400 10px Inter, -apple-system, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('Generated by Age Master \u2022 ' + now, cw / 2, 565);
+        sh('CURRENT AGE', 548);
+        dr('Years', String(y), 526);
+        dr('Months', String(m), 496);
+        dr('Days', String(d), 466);
 
-        canvas.toBlob(function (blob) {
-            var url = URL.createObjectURL(blob);
-            var a = document.createElement('a');
-            a.href = url;
-            a.download = 'AgeMaster_Certificate_' + currentName.replace(/\s+/g, '_') + '.png';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            showToast('Certificate downloaded!');
-        }, 'image/png');
+        sh('LIFE STATS', 426);
+        dr('Total Days', formatNumber(totalDays), 404);
+        dr('Total Hours', formatNumber(totalDays * 24), 374);
+        dr('Total Minutes', formatNumber(totalDays * 24 * 60), 344);
+
+        ln('0.85 0.85 0.85 RG');
+        ln('0.6 w');
+        ln('40 320 m 560 320 l S');
+
+        ln('BT');
+        ln('/F1 9 Tf');
+        ln('0.6 0.6 0.6 rg');
+        var footer = 'Generated by Age Master - ' + now;
+        var tw9 = textWidth(footer, 9);
+        ln(((pdfW - tw9) / 2).toFixed(1) + ' 305 Td');
+        ln('(' + footer + ') Tj');
+        ln('ET');
+
+        var stream = lines.join('\n');
+
+        setObj(catalog, '<< /Type /Catalog /Pages ' + pages + ' 0 R >>');
+        setObj(pages, '<< /Type /Pages /Kids [' + page + ' 0 R] /Count 1 >>');
+        setObj(font, '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
+        setObj(page, '<< /Type /Page /Parent ' + pages + ' 0 R /MediaBox [0 0 595 842] /Contents ' + content + ' 0 R /Resources << /Font << /F1 ' + font + ' 0 R >> >> >>');
+        setObj(content, '<< /Length ' + stream.length + ' >>\nstream\n' + stream + '\nendstream');
+
+        var pdf = '%PDF-1.4\n';
+        var offsetMap = [];
+        for (var i = 0; i < objs.length; i++) {
+            offsetMap.push(pdf.length);
+            pdf += (i + 1) + ' 0 obj\n' + objs[i] + '\nendobj\n\n';
+        }
+
+        var xrefStart = pdf.length;
+        pdf += 'xref\n';
+        pdf += '0 ' + (objs.length + 1) + '\n';
+        pdf += '0000000000 65535 f \n';
+        for (var j = 0; j < offsetMap.length; j++) {
+            pdf += String(offsetMap[j]).padStart(10, '0') + ' 00000 n \n';
+        }
+
+        pdf += 'trailer\n<< /Size ' + (objs.length + 1) + ' /Root ' + catalog + ' 0 R >>\n';
+        pdf += 'startxref\n' + xrefStart + '\n%%EOF';
+
+        var blob = new Blob([pdf], { type: 'application/pdf' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'AgeMaster_Certificate_' + currentName.replace(/\s+/g, '_') + '.pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('PDF downloaded!');
     }
 
     function shareResults() {
