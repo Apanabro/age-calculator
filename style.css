@@ -1212,3 +1212,53 @@ body {
     font-size: 11px;
     color: var(--text-tertiary);
 }
+
+/* ── Ad Spots ── */
+.ad-spot {
+    min-height: 90px;
+    margin: 12px 0;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.02);
+    border: 1px dashed rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+.ad-spot:empty,
+.ad-spot:not(:empty):has(iframe) {
+    border: none;
+    background: transparent;
+}
+.ad-label {
+    font-size: 9px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.15);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: absolute;
+    top: 4px;
+    left: 8px;
+}
+.ad-sticky {
+    position: fixed;
+    bottom: 60px;
+    left: 0;
+    right: 0;
+    min-height: 50px;
+    background: rgba(18,18,34,0.95);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--surface-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 90;
+    display: none;
+}
+.ad-sticky.has-ad {
+    display: flex;
+}
+@media (max-width: 768px) {
+    .ad-spot { min-height: 60px; margin: 8px 0; }
+}
