@@ -721,75 +721,89 @@ body {
 
 /* ── Print Styles ── */
 @media print {
-    body * { display: none !important; }
-    #printCert, #printCert * {
+    * { display: none !important; }
+    #printCert {
+        display: block !important;
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 999999 !important;
+        background: #121222 !important;
+        padding: 50px 40px !important;
+        margin: 0 !important;
+        font-family: 'Inter', -apple-system, sans-serif !important;
+        color: #fff !important;
+        overflow: hidden !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+    #printCert * {
         display: block !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
         color-adjust: exact !important;
     }
-    #printCert {
-        display: block !important;
-        position: fixed;
-        inset: 0;
-        z-index: 99999;
-        background: #121222 !important;
-        padding: 48px 40px;
-        font-family: 'Inter', -apple-system, sans-serif;
-        color: #fff;
-    }
     #printCert h1 {
-        font-size: 30px;
-        font-weight: 900;
-        text-align: center;
+        font-size: 32px !important;
+        font-weight: 900 !important;
+        text-align: center !important;
         background: linear-gradient(135deg, #a855f7, #ec4899) !important;
         -webkit-background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
         background-clip: text !important;
-        margin-bottom: 6px;
+        margin: 0 0 6px 0 !important;
+        padding: 0 !important;
     }
     #printCert .psub {
-        text-align: center;
-        color: rgba(255,255,255,0.5) !important;
-        font-size: 13px;
-        margin-bottom: 28px;
+        text-align: center !important;
+        color: rgba(255,255,255,0.45) !important;
+        font-size: 13px !important;
+        margin: 0 0 30px 0 !important;
+        padding: 0 !important;
     }
     #printCert hr {
-        border: none;
+        border: none !important;
         border-top: 1px solid rgba(255,255,255,0.08) !important;
-        margin: 24px 0;
+        margin: 0 0 10px 0 !important;
     }
     #printCert h2 {
-        font-size: 11px;
-        font-weight: 700;
+        font-size: 11px !important;
+        font-weight: 700 !important;
         color: #a855f7 !important;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-        margin: 28px 0 14px;
+        text-transform: uppercase !important;
+        letter-spacing: 1.5px !important;
+        margin: 24px 0 12px 0 !important;
+        padding: 0 !important;
     }
     #printCert .prow {
-        display: flex;
-        justify-content: space-between;
-        padding: 10px 16px;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 12px 0 !important;
+        margin: 0 !important;
         border-bottom: 1px solid rgba(255,255,255,0.06) !important;
-        border-radius: 8px;
-        margin-bottom: 4px;
-        font-size: 13px;
-    }
-    #printCert .prow:nth-child(even) {
-        background: rgba(255,255,255,0.03) !important;
+        font-size: 14px !important;
     }
     #printCert .plbl {
-        color: rgba(255,255,255,0.45) !important;
+        color: rgba(255,255,255,0.4) !important;
+        font-size: 14px !important;
+        margin: 0 !important;
     }
     #printCert .pval {
-        font-weight: 700;
-        color: #fff !important;
+        font-weight: 700 !important;
+        color: #ffffff !important;
+        font-size: 15px !important;
+        margin: 0 !important;
+        text-align: right !important;
     }
     #printCert .pfooter {
-        text-align: center;
+        text-align: center !important;
         color: rgba(255,255,255,0.25) !important;
-        font-size: 10px;
-        margin-top: 32px;
+        font-size: 10px !important;
+        margin: 36px 0 0 0 !important;
+        padding: 0 !important;
     }
 }
