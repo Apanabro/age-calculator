@@ -465,7 +465,7 @@
     $('closePremiumModal').addEventListener('click', closePremiumModal);
     $('closeHdModal').addEventListener('click', function () { $('hdModal').style.display = 'none'; });
     $('closeCertPreview').addEventListener('click', function () { $('certPreviewModal').style.display = 'none'; });
-    $('certDownloadBtn').addEventListener('click', function () { $('certPreviewModal').style.display = 'none'; generatePDF(); });
+    $('certDownloadBtn').addEventListener('click', function () { $('certPreviewModal').style.display = 'none'; setTimeout(function () { generatePDF(); }, 100); });
 
     $('premiumModal').addEventListener('click', function (e) { if (e.target === $('premiumModal')) closePremiumModal(); });
     $('certPreviewModal').addEventListener('click', function (e) { if (e.target === $('certPreviewModal')) $('certPreviewModal').style.display = 'none'; });
