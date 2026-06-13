@@ -224,7 +224,9 @@
         w.document.write('<div class="actions">');
         w.document.write('<button class="btn" onclick="window.print()">Save as PDF</button>');
         w.document.write('<button class="btn close" onclick="window.close()">Close</button>');
-        w.document.write('</div></div></body></html>');
+        w.document.write('</div>');
+        w.document.write('<p style="text-align:center;color:rgba(255,255,255,0.3);font-size:11px;margin-top:12px;">Tip: In print dialog, click "More settings" → check <b>"Background graphics"</b> for dark theme</p>');
+        w.document.write('</div></body></html>');
         w.document.close();
     }
 
