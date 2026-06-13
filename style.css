@@ -453,6 +453,99 @@ body {
     letter-spacing: 0.3px;
 }
 
+/* ── Action Buttons ── */
+.action-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-top: 20px;
+    opacity: 0;
+    transform: translateY(12px);
+    animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.75s both;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 52px;
+    border: none;
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.action-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.action-btn:hover::before {
+    opacity: 1;
+}
+
+.action-btn:active {
+    transform: scale(0.95);
+}
+
+.pdf-btn {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+    color: white;
+    box-shadow: 0 4px 16px rgba(255, 107, 107, 0.3);
+}
+
+.share-btn {
+    background: linear-gradient(135deg, #4ecdc4 0%, #2ecc71 100%);
+    color: white;
+    box-shadow: 0 4px 16px rgba(78, 205, 196, 0.3);
+}
+
+.copy-btn {
+    background: linear-gradient(135deg, #7c5cff 0%, #a855f7 100%);
+    color: white;
+    box-shadow: 0 4px 16px rgba(124, 92, 255, 0.3);
+}
+
+.action-btn svg {
+    flex-shrink: 0;
+}
+
+/* ── Share Toast ── */
+.share-toast {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 20px;
+    background: rgba(78, 205, 196, 0.15);
+    border: 1px solid rgba(78, 205, 196, 0.3);
+    border-radius: var(--radius-md);
+    color: #4ecdc4;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 12px;
+    opacity: 0;
+    transform: translateY(-8px);
+    pointer-events: none;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.share-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
 /* ── Footer ── */
 .footer {
     text-align: center;
@@ -527,6 +620,14 @@ body {
 
     .age-big-number {
         font-size: 40px;
+    }
+
+    .action-buttons {
+        grid-template-columns: 1fr;
+    }
+
+    .action-btn {
+        height: 48px;
     }
 }
 
