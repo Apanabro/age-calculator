@@ -728,28 +728,31 @@ body {
         position: fixed;
         inset: 0;
         z-index: 99999;
-        background: #fff;
-        padding: 40px;
+        background: #121222;
+        padding: 48px 40px;
         font-family: 'Inter', -apple-system, sans-serif;
-        color: #333;
+        color: #fff;
     }
     #printCert h1 {
-        font-size: 28px;
+        font-size: 30px;
         font-weight: 900;
         text-align: center;
-        color: #a855f7;
-        margin-bottom: 4px;
+        background: linear-gradient(135deg, #a855f7, #ec4899);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 6px;
     }
     #printCert .psub {
         text-align: center;
-        color: #999;
+        color: rgba(255,255,255,0.5);
         font-size: 13px;
-        margin-bottom: 24px;
+        margin-bottom: 28px;
     }
     #printCert hr {
         border: none;
-        border-top: 1px solid #eee;
-        margin: 20px 0;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        margin: 24px 0;
     }
     #printCert h2 {
         font-size: 11px;
@@ -757,21 +760,31 @@ body {
         color: #a855f7;
         text-transform: uppercase;
         letter-spacing: 1.5px;
-        margin: 20px 0 10px;
+        margin: 28px 0 14px;
     }
     #printCert .prow {
         display: flex;
         justify-content: space-between;
-        padding: 7px 0;
-        border-bottom: 1px solid #f5f5f5;
+        padding: 10px 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        border-radius: 8px;
+        margin-bottom: 4px;
         font-size: 13px;
     }
-    #printCert .plbl { color: #999; }
-    #printCert .pval { font-weight: 700; color: #222; }
+    #printCert .prow:nth-child(even) {
+        background: rgba(255,255,255,0.03);
+    }
+    #printCert .plbl {
+        color: rgba(255,255,255,0.45);
+    }
+    #printCert .pval {
+        font-weight: 700;
+        color: #fff;
+    }
     #printCert .pfooter {
         text-align: center;
-        color: #ccc;
+        color: rgba(255,255,255,0.25);
         font-size: 10px;
-        margin-top: 24px;
+        margin-top: 32px;
     }
 }
