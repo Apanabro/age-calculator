@@ -165,6 +165,8 @@
     function generatePDF() {
         if (!dobDate) return;
 
+        var currentName = nameInput.value.trim() || userName || 'User';
+
         const today = new Date();
         let y = today.getFullYear() - dobDate.getFullYear();
         let m = today.getMonth() - dobDate.getMonth();
@@ -180,8 +182,9 @@
         var cert = document.getElementById('printCert');
         cert.innerHTML = '' +
             '<h1>Age Master Certificate</h1>' +
-            '<p class="psub">' + userName + ' &bull; Your Life, Precisely Measured</p><hr>' +
+            '<p class="psub">Your Life, Precisely Measured</p><hr>' +
             '<h2>Personal Details</h2>' +
+            '<div class="prow"><span class="plbl">Name</span><span class="pval">' + currentName + '</span></div>' +
             '<div class="prow"><span class="plbl">Date of Birth</span><span class="pval">' + dobStr + '</span></div>' +
             '<div class="prow"><span class="plbl">Day of Birth</span><span class="pval">' + bornDay + '</span></div>' +
             '<div class="prow"><span class="plbl">Zodiac Sign</span><span class="pval">' + zodiac + '</span></div>' +
