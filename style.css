@@ -722,13 +722,18 @@ body {
 /* ── Print Styles ── */
 @media print {
     body * { display: none !important; }
-    #printCert, #printCert * { display: block !important; }
+    #printCert, #printCert * {
+        display: block !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
     #printCert {
         display: block !important;
         position: fixed;
         inset: 0;
         z-index: 99999;
-        background: #121222;
+        background: #121222 !important;
         padding: 48px 40px;
         font-family: 'Inter', -apple-system, sans-serif;
         color: #fff;
@@ -737,27 +742,27 @@ body {
         font-size: 30px;
         font-weight: 900;
         text-align: center;
-        background: linear-gradient(135deg, #a855f7, #ec4899);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        background: linear-gradient(135deg, #a855f7, #ec4899) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        background-clip: text !important;
         margin-bottom: 6px;
     }
     #printCert .psub {
         text-align: center;
-        color: rgba(255,255,255,0.5);
+        color: rgba(255,255,255,0.5) !important;
         font-size: 13px;
         margin-bottom: 28px;
     }
     #printCert hr {
         border: none;
-        border-top: 1px solid rgba(255,255,255,0.08);
+        border-top: 1px solid rgba(255,255,255,0.08) !important;
         margin: 24px 0;
     }
     #printCert h2 {
         font-size: 11px;
         font-weight: 700;
-        color: #a855f7;
+        color: #a855f7 !important;
         text-transform: uppercase;
         letter-spacing: 1.5px;
         margin: 28px 0 14px;
@@ -766,24 +771,24 @@ body {
         display: flex;
         justify-content: space-between;
         padding: 10px 16px;
-        border-bottom: 1px solid rgba(255,255,255,0.06);
+        border-bottom: 1px solid rgba(255,255,255,0.06) !important;
         border-radius: 8px;
         margin-bottom: 4px;
         font-size: 13px;
     }
     #printCert .prow:nth-child(even) {
-        background: rgba(255,255,255,0.03);
+        background: rgba(255,255,255,0.03) !important;
     }
     #printCert .plbl {
-        color: rgba(255,255,255,0.45);
+        color: rgba(255,255,255,0.45) !important;
     }
     #printCert .pval {
         font-weight: 700;
-        color: #fff;
+        color: #fff !important;
     }
     #printCert .pfooter {
         text-align: center;
-        color: rgba(255,255,255,0.25);
+        color: rgba(255,255,255,0.25) !important;
         font-size: 10px;
         margin-top: 32px;
     }
