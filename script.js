@@ -21,6 +21,7 @@
     const $ = (id) => document.getElementById(id);
 
     const dobInput = $('dob');
+    const nameInput = $('userName');
     const calcBtn = $('calculateBtn');
     const resultsSection = $('resultsSection');
     const errorToast = $('errorToast');
@@ -32,6 +33,7 @@
     let toastTimer = null;
     let liveTimer = null;
     let dobDate = null;
+    let userName = '';
 
     function getZodiac(month, day) {
         for (const z of ZODIAC) {
@@ -93,6 +95,7 @@
         }
 
         dobDate = new Date(val + 'T00:00:00');
+        userName = nameInput.value.trim() || 'User';
         const today = new Date();
 
         if (dobDate >= today) {
@@ -177,7 +180,7 @@
         var cert = document.getElementById('printCert');
         cert.innerHTML = '' +
             '<h1>Age Master Certificate</h1>' +
-            '<p class="psub">Your Life, Precisely Measured</p><hr>' +
+            '<p class="psub">' + userName + ' &bull; Your Life, Precisely Measured</p><hr>' +
             '<h2>Personal Details</h2>' +
             '<div class="prow"><span class="plbl">Date of Birth</span><span class="pval">' + dobStr + '</span></div>' +
             '<div class="prow"><span class="plbl">Day of Birth</span><span class="pval">' + bornDay + '</span></div>' +
@@ -207,6 +210,7 @@
         if (m < 0) { y--; m += 12; }
 
         const text = `Age Master Results\n\n` +
+            `Name: ${userName}\n` +
             `DOB: ${dobDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}\n` +
             `Age: ${y} years, ${m} months, ${d} days\n` +
             `Zodiac: ${getZodiac(dobDate.getMonth() + 1, dobDate.getDate())}\n` +
@@ -229,7 +233,7 @@
         if (d < 0) { m--; d += new Date(today.getFullYear(), today.getMonth(), 0).getDate(); }
         if (m < 0) { y--; m += 12; }
 
-        const text = `Age Master:\n${y}y ${m}m ${d}d\nZodiac: ${getZodiac(dobDate.getMonth() + 1, dobDate.getDate())}`;
+        const text = `Age Master: ${userName}\n${y}y ${m}m ${d}d\nZodiac: ${getZodiac(dobDate.getMonth() + 1, dobDate.getDate())}`;
         copyToClipboard(text);
     }
 
