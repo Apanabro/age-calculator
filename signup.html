@@ -77,7 +77,7 @@
     (function() {
         'use strict';
         var API_BASE = (location.hostname === 'localhost' || location.protocol === 'file:')
-            ? 'http://localhost:3000/api' : location.origin + '/api';
+            ? 'http://localhost:3000/api' : 'https://age-calculator-zybq.onrender.com/api';
 
         var session = null;
         try { session = JSON.parse(localStorage.getItem('ageMaster_session')); } catch(e) {}

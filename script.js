@@ -3,7 +3,7 @@
 
     var API_BASE = (location.hostname === 'localhost' || location.protocol === 'file:')
         ? 'http://localhost:3000/api'
-        : location.origin + '/api';
+        : 'https://age-calculator-zybq.onrender.com/api';
 
     var ZODIAC = [
         { sign: 'Capricorn', start: [12, 22], end: [1, 19] },
