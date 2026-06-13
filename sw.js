@@ -1,4 +1,4 @@
-const CACHE_NAME = 'age-calc-v10';
+const CACHE_NAME = 'age-calc-v11';
 const ASSETS = [
     '/',
     '/index.html',
@@ -11,7 +11,9 @@ const ASSETS = [
     '/signup.html',
     '/dashboard.html',
     '/privacy.html',
-    '/terms.html'
+    '/terms.html',
+    '/sitemap.xml',
+    '/robots.txt'
 ];
 
 self.addEventListener('install', (e) => {

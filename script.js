@@ -378,6 +378,15 @@
     dobInput.addEventListener('change', function () { if (dobInput.value) calculateAge(); });
     document.querySelectorAll('.nav-item').forEach(function (btn) { btn.addEventListener('click', function () { document.querySelectorAll('.nav-item').forEach(function (b) { b.classList.remove('active'); }); btn.classList.add('active'); }); });
 
+    document.querySelectorAll('.faq-question').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var item = btn.closest('.faq-item');
+            var isOpen = item.classList.contains('open');
+            document.querySelectorAll('.faq-item').forEach(function (el) { el.classList.remove('open'); });
+            if (!isOpen) item.classList.add('open');
+        });
+    });
+
     if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); }); }
     init();
 })();
