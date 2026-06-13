@@ -166,7 +166,6 @@
         if (!dobDate) return;
 
         var currentName = nameInput.value.trim() || userName || 'User';
-
         const today = new Date();
         let y = today.getFullYear() - dobDate.getFullYear();
         let m = today.getMonth() - dobDate.getMonth();
@@ -179,55 +178,104 @@
         const bornDay = DAYS[dobDate.getDay()];
         const now = today.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
-        var w = window.open('', '_blank');
-        if (!w) { showToast('Allow pop-ups for this site'); return; }
+        var canvas = document.createElement('canvas');
+        var scale = 3;
+        var cw = 600, ch = 850;
+        canvas.width = cw * scale;
+        canvas.height = ch * scale;
+        var ctx = canvas.getContext('2d');
+        ctx.scale(scale, scale);
 
-        w.document.write('<!DOCTYPE html><html><head><title>Age Master Certificate</title>');
-        w.document.write('<meta name="viewport" content="width=device-width,initial-scale=1">');
-        w.document.write('<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">');
-        w.document.write('<style>');
-        w.document.write('*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}');
-        w.document.write('html,body{height:100%;}');
-        w.document.write('body{font-family:Inter,-apple-system,sans-serif;background:#121222;display:flex;justify-content:center;align-items:flex-start;padding:32px 20px;-webkit-print-color-adjust:exact;print-color-adjust:exact;color-adjust:exact;}');
-        w.document.write('.card{background:#121222;border-radius:20px;padding:48px 40px;max-width:560px;width:100%;color:#fff;}');
-        w.document.write('h1{font-size:30px;font-weight:900;text-align:center;background:linear-gradient(135deg,#a855f7,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px;}');
-        w.document.write('.sub{text-align:center;color:rgba(255,255,255,0.45);font-size:13px;margin-bottom:28px;}');
-        w.document.write('hr{border:none;border-top:1px solid rgba(255,255,255,0.08);margin:0 0 10px 0;}');
-        w.document.write('h2{font-size:11px;font-weight:700;color:#a855f7;text-transform:uppercase;letter-spacing:1.5px;margin:24px 0 12px 0;}');
-        w.document.write('.row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);font-size:14px;}');
-        w.document.write('.lbl{color:rgba(255,255,255,0.4);}');
-        w.document.write('.val{font-weight:700;color:#fff;font-size:15px;text-align:right;}');
-        w.document.write('.footer{text-align:center;color:rgba(255,255,255,0.25);font-size:10px;margin-top:32px;}');
-        w.document.write('.actions{text-align:center;margin-top:28px;}');
-        w.document.write('.btn{padding:14px 40px;background:linear-gradient(135deg,#a855f7,#ec4899);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;margin:0 8px;}');
-        w.document.write('.btn:hover{opacity:0.9;}');
-        w.document.write('.btn.close{background:rgba(255,255,255,0.1);}');
-        w.document.write('@media print{body{padding:0;}.actions{display:none!important;}.card{border-radius:0;max-width:100%;}}');
-        w.document.write('</style></head><body>');
-        w.document.write('<div class="card">');
-        w.document.write('<h1>Age Master Certificate</h1>');
-        w.document.write('<p class="sub">Your Life, Precisely Measured</p><hr>');
-        w.document.write('<h2>Personal Details</h2>');
-        w.document.write('<div class="row"><span class="lbl">Name</span><span class="val">' + currentName + '</span></div>');
-        w.document.write('<div class="row"><span class="lbl">Date of Birth</span><span class="val">' + dobStr + '</span></div>');
-        w.document.write('<div class="row"><span class="lbl">Day of Birth</span><span class="val">' + bornDay + '</span></div>');
-        w.document.write('<div class="row"><span class="lbl">Zodiac Sign</span><span class="val">' + zodiac + '</span></div>');
-        w.document.write('<h2>Current Age</h2>');
-        w.document.write('<div class="row"><span class="lbl">Years</span><span class="val">' + y + '</span></div>');
-        w.document.write('<div class="row"><span class="lbl">Months</span><span class="val">' + m + '</span></div>');
-        w.document.write('<div class="row"><span class="lbl">Days</span><span class="val">' + d + '</span></div>');
-        w.document.write('<h2>Life Stats</h2>');
-        w.document.write('<div class="row"><span class="lbl">Total Days</span><span class="val">' + formatNumber(totalDays) + '</span></div>');
-        w.document.write('<div class="row"><span class="lbl">Total Hours</span><span class="val">' + formatNumber(totalDays * 24) + '</span></div>');
-        w.document.write('<div class="row"><span class="lbl">Total Minutes</span><span class="val">' + formatNumber(totalDays * 24 * 60) + '</span></div>');
-        w.document.write('<hr><p class="footer">Generated by Age Master &bull; ' + now + '</p>');
-        w.document.write('<div class="actions">');
-        w.document.write('<button class="btn" onclick="window.print()">Save as PDF</button>');
-        w.document.write('<button class="btn close" onclick="window.close()">Close</button>');
-        w.document.write('</div>');
-        w.document.write('<p style="text-align:center;color:rgba(255,255,255,0.3);font-size:11px;margin-top:12px;">Tip: In print dialog, click "More settings" → check <b>"Background graphics"</b> for dark theme</p>');
-        w.document.write('</div></body></html>');
-        w.document.close();
+        ctx.fillStyle = '#121222';
+        ctx.fillRect(0, 0, cw, ch);
+
+        var grd = ctx.createLinearGradient(0, 0, cw, ch);
+        grd.addColorStop(0, 'rgba(168,85,247,0.08)');
+        grd.addColorStop(1, 'rgba(236,72,153,0.08)');
+        ctx.fillStyle = grd;
+        ctx.fillRect(0, 0, cw, ch);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '900 28px Inter, -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        var titleGrd = ctx.createLinearGradient(180, 50, 420, 80);
+        titleGrd.addColorStop(0, '#a855f7');
+        titleGrd.addColorStop(1, '#ec4899');
+        ctx.fillStyle = titleGrd;
+        ctx.fillText('Age Master Certificate', cw / 2, 65);
+
+        ctx.fillStyle = 'rgba(255,255,255,0.4)';
+        ctx.font = '400 13px Inter, -apple-system, sans-serif';
+        ctx.fillText('Your Life, Precisely Measured', cw / 2, 90);
+
+        ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(40, 105);
+        ctx.lineTo(cw - 40, 105);
+        ctx.stroke();
+
+        function sectionHeader(text, yPos) {
+            ctx.fillStyle = '#a855f7';
+            ctx.font = '700 11px Inter, -apple-system, sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText(text, 50, yPos);
+        }
+
+        function dataRow(label, value, yPos) {
+            ctx.fillStyle = 'rgba(255,255,255,0.4)';
+            ctx.font = '400 14px Inter, -apple-system, sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText(label, 50, yPos);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '700 15px Inter, -apple-system, sans-serif';
+            ctx.textAlign = 'right';
+            ctx.fillText(value, cw - 50, yPos);
+            ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+            ctx.beginPath();
+            ctx.moveTo(50, yPos + 10);
+            ctx.lineTo(cw - 50, yPos + 10);
+            ctx.stroke();
+        }
+
+        sectionHeader('PERSONAL DETAILS', 140);
+        dataRow('Name', currentName, 165);
+        dataRow('Date of Birth', dobStr, 195);
+        dataRow('Day of Birth', bornDay, 225);
+        dataRow('Zodiac Sign', zodiac, 255);
+
+        sectionHeader('CURRENT AGE', 295);
+        dataRow('Years', String(y), 320);
+        dataRow('Months', String(m), 350);
+        dataRow('Days', String(d), 380);
+
+        sectionHeader('LIFE STATS', 420);
+        dataRow('Total Days', formatNumber(totalDays), 445);
+        dataRow('Total Hours', formatNumber(totalDays * 24), 475);
+        dataRow('Total Minutes', formatNumber(totalDays * 24 * 60), 505);
+
+        ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+        ctx.beginPath();
+        ctx.moveTo(40, 540);
+        ctx.lineTo(cw - 40, 540);
+        ctx.stroke();
+
+        ctx.fillStyle = 'rgba(255,255,255,0.25)';
+        ctx.font = '400 10px Inter, -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Generated by Age Master \u2022 ' + now, cw / 2, 565);
+
+        canvas.toBlob(function (blob) {
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'AgeMaster_Certificate_' + currentName.replace(/\s+/g, '_') + '.png';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('Certificate downloaded!');
+        }, 'image/png');
     }
 
     function shareResults() {
