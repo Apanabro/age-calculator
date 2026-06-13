@@ -455,15 +455,11 @@ body {
 
 /* ── Action Buttons ── */
 .action-buttons {
-    display: none;
+    display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 12px;
     margin-top: 20px;
     animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.results.show .action-buttons {
-    display: grid;
 }
 
 .action-btn {
