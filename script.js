@@ -161,88 +161,102 @@
 
     function generatePDF() {
         if (!dobDate) return;
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-        const w = doc.internal.pageSize.getWidth();
-        const h = doc.internal.pageSize.getHeight();
 
-        for (let i = 0; i < h; i += 0.5) {
-            const r = Math.round(18 + (236 - 18) * (i / h) * 0.3);
-            const g = Math.round(18 + (72 - 18) * (i / h) * 0.3);
-            const b = Math.round(34 + (153 - 34) * (i / h) * 0.3);
-            doc.setFillColor(r, g, b);
-            doc.rect(0, i, w, 0.6, 'F');
+        if (!window.jspdf) {
+            showToast('PDF library loading... try again');
+            const s = document.createElement('script');
+            s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js';
+            s.onload = () => showToast('Ready! Tap PDF again');
+            document.head.appendChild(s);
+            return;
         }
 
-        doc.setFillColor(255, 255, 255);
-        doc.roundedRect(18, 18, w - 36, h - 36, 6, 6, 'F');
+        try {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+            const w = doc.internal.pageSize.getWidth();
+            const h = doc.internal.pageSize.getHeight();
 
-        doc.setTextColor(50, 50, 50);
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(26);
-        doc.text('Age Master Certificate', w / 2, 38, { align: 'center' });
+            for (let i = 0; i < h; i += 0.5) {
+                const r = Math.round(18 + (236 - 18) * (i / h) * 0.3);
+                const g = Math.round(18 + (72 - 18) * (i / h) * 0.3);
+                const b = Math.round(34 + (153 - 34) * (i / h) * 0.3);
+                doc.setFillColor(r, g, b);
+                doc.rect(0, i, w, 0.6, 'F');
+            }
 
-        doc.setFontSize(11);
-        doc.setFont('helvetica', 'normal');
-        doc.setTextColor(140, 140, 140);
-        doc.text('Your Life, Precisely Measured', w / 2, 46, { align: 'center' });
+            doc.setFillColor(255, 255, 255);
+            doc.roundedRect(18, 18, w - 36, h - 36, 6, 6, 'F');
 
-        doc.setDrawColor(220, 220, 220);
-        doc.setLineWidth(0.3);
-        doc.line(28, 52, w - 28, 52);
+            doc.setTextColor(50, 50, 50);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(26);
+            doc.text('Age Master Certificate', w / 2, 38, { align: 'center' });
 
-        const left = 32;
-        const right = w - 32;
-        let y = 62;
+            doc.setFontSize(11);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(140, 140, 140);
+            doc.text('Your Life, Precisely Measured', w / 2, 46, { align: 'center' });
 
-        function row(label, value) {
-            doc.setFont('helvetica', 'normal').setFontSize(10).setTextColor(150, 150, 150);
-            doc.text(label, left, y);
-            doc.setFont('helvetica', 'bold').setFontSize(11).setTextColor(50, 50, 50);
-            doc.text(String(value), right, y, { align: 'right' });
-            y += 9;
+            doc.setDrawColor(220, 220, 220);
+            doc.setLineWidth(0.3);
+            doc.line(28, 52, w - 28, 52);
+
+            const left = 32;
+            const right = w - 32;
+            let y = 62;
+
+            function row(label, value) {
+                doc.setFont('helvetica', 'normal').setFontSize(10).setTextColor(150, 150, 150);
+                doc.text(label, left, y);
+                doc.setFont('helvetica', 'bold').setFontSize(11).setTextColor(50, 50, 50);
+                doc.text(String(value), right, y, { align: 'right' });
+                y += 9;
+            }
+
+            function section(title) {
+                y += 2;
+                doc.setFont('helvetica', 'bold').setFontSize(13).setTextColor(168, 85, 247);
+                doc.text(title, left, y);
+                y += 9;
+            }
+
+            const today = new Date();
+            const dobStr = dobDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            let years = today.getFullYear() - dobDate.getFullYear();
+            let months = today.getMonth() - dobDate.getMonth();
+            let days = today.getDate() - dobDate.getDate();
+            if (days < 0) { months--; days += new Date(today.getFullYear(), today.getMonth(), 0).getDate(); }
+            if (months < 0) { years--; months += 12; }
+            const totalDays = Math.floor((today - dobDate) / 86400000);
+
+            section('Personal Details');
+            row('Date of Birth', dobStr);
+            row('Day of Birth', DAYS[dobDate.getDay()]);
+            row('Zodiac Sign', getZodiac(dobDate.getMonth() + 1, dobDate.getDate()));
+
+            section('Current Age');
+            row('Years', years);
+            row('Months', months);
+            row('Days', days);
+
+            section('Life Stats');
+            row('Total Days', formatNumber(totalDays));
+            row('Total Hours', formatNumber(totalDays * 24));
+            row('Total Minutes', formatNumber(totalDays * 24 * 60));
+
+            doc.setDrawColor(220, 220, 220);
+            doc.line(28, y + 4, w - 28, y + 4);
+
+            doc.setFontSize(8).setFont('helvetica', 'normal').setTextColor(180, 180, 180);
+            doc.text('Generated by Age Master', w / 2, h - 24, { align: 'center' });
+            doc.text(today.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }), w / 2, h - 18, { align: 'center' });
+
+            doc.save('age-master-certificate.pdf');
+            showToast('PDF downloaded!');
+        } catch (err) {
+            showToast('PDF error — try Share instead');
         }
-
-        function section(title) {
-            y += 2;
-            doc.setFont('helvetica', 'bold').setFontSize(13).setTextColor(168, 85, 247);
-            doc.text(title, left, y);
-            y += 9;
-        }
-
-        const today = new Date();
-        const dobStr = dobDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-        let years = today.getFullYear() - dobDate.getFullYear();
-        let months = today.getMonth() - dobDate.getMonth();
-        let days = today.getDate() - dobDate.getDate();
-        if (days < 0) { months--; days += new Date(today.getFullYear(), today.getMonth(), 0).getDate(); }
-        if (months < 0) { years--; months += 12; }
-        const totalDays = Math.floor((today - dobDate) / 86400000);
-
-        section('Personal Details');
-        row('Date of Birth', dobStr);
-        row('Day of Birth', DAYS[dobDate.getDay()]);
-        row('Zodiac Sign', getZodiac(dobDate.getMonth() + 1, dobDate.getDate()));
-
-        section('Current Age');
-        row('Years', years);
-        row('Months', months);
-        row('Days', days);
-
-        section('Life Stats');
-        row('Total Days', formatNumber(totalDays));
-        row('Total Hours', formatNumber(totalDays * 24));
-        row('Total Minutes', formatNumber(totalDays * 24 * 60));
-
-        doc.setDrawColor(220, 220, 220);
-        doc.line(28, y + 4, w - 28, y + 4);
-
-        doc.setFontSize(8).setFont('helvetica', 'normal').setTextColor(180, 180, 180);
-        doc.text('Generated by Age Master', w / 2, h - 24, { align: 'center' });
-        doc.text(today.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }), w / 2, h - 18, { align: 'center' });
-
-        doc.save('age-master-certificate.pdf');
-        showToast('PDF downloaded!');
     }
 
     function shareResults() {
