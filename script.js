@@ -20,7 +20,6 @@
         { sign: 'Sagittarius', start: [11, 22], end: [12, 21] }
     ];
 
-    var CHINESE_ZODIAC = ['Monkey','Rooster','Dog','Pig','Rat','Ox','Tiger','Rabbit','Dragon','Snake','Horse','Goat'];
     var BIRTHSTONES = ['Garnet','Amethyst','Aquamarine','Diamond','Emerald','Alexandrite','Ruby','Peridot','Sapphire','Opal','Topaz','Tanzanite'];
     var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
     var CERT_COLORS = { title: [0.6588, 0.3333, 0.9255], section: [0.6588, 0.3333, 0.9255] };
@@ -64,7 +63,6 @@
         return 'Capricorn';
     }
 
-    function getChineseZodiac(year) { return CHINESE_ZODIAC[year % 12]; }
     function getBirthstone(month) { return BIRTHSTONES[month - 1]; }
     function formatNumber(n) { return n.toLocaleString(); }
 
@@ -150,7 +148,6 @@
 
         $('birthDay').textContent = DAYS[dobDate.getDay()];
         $('zodiacSign').textContent = getZodiac(dobDate.getMonth() + 1, dobDate.getDate());
-        $('chineseZodiac').textContent = getChineseZodiac(dobDate.getFullYear()) + ' (' + getChineseZodiac(dobDate.getFullYear()) + ')';
         $('birthstone').textContent = getBirthstone(dobDate.getMonth() + 1);
         $('totalDays').textContent = formatNumber(age.totalDays);
 
@@ -196,7 +193,6 @@
         var dobStr = dobDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
         var refStr = refDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
         var zodiac = getZodiac(dobDate.getMonth() + 1, dobDate.getDate());
-        var cnZodiac = getChineseZodiac(dobDate.getFullYear());
         var birthstone = getBirthstone(dobDate.getMonth() + 1);
         var bornDay = DAYS[dobDate.getDay()];
         var now = refDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
@@ -234,7 +230,6 @@
         dr('Date of Birth', dobStr, 690);
         dr('Day of Birth', bornDay, 670);
         dr('Zodiac Sign', zodiac, 650);
-        dr('Chinese Zodiac', cnZodiac, 630);
         dr('Birthstone', birthstone, 610);
 
         sh('AGE' + (calcAgeAt ? ' (as of ' + refStr + ')' : ''), 580);
@@ -286,7 +281,6 @@
         var text = 'Age Master Results\n\nName: ' + userName + '\nDOB: ' + dobDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) +
             '\nAge: ' + age.years + ' years, ' + age.months + ' months, ' + age.days + ' days\nWeeks: ' + age.totalWeeks +
             '\nZodiac: ' + getZodiac(dobDate.getMonth() + 1, dobDate.getDate()) +
-            '\nChinese Zodiac: ' + getChineseZodiac(dobDate.getFullYear()) +
             '\nBirthstone: ' + getBirthstone(dobDate.getMonth() + 1) +
             '\nBorn on: ' + DAYS[dobDate.getDay()] +
             '\n\nCalculate yours -> apanabro.github.io/age-calculator/';
@@ -297,7 +291,7 @@
         if (!dobDate) return;
         var refDate = calcAgeAt || new Date();
         var age = computeAge(dobDate, refDate);
-        var text = 'Age Master: ' + userName + '\n' + age.years + 'y ' + age.months + 'm ' + age.days + 'd\nWeeks: ' + age.totalWeeks + '\nZodiac: ' + getZodiac(dobDate.getMonth() + 1, dobDate.getDate()) + '\nChinese: ' + getChineseZodiac(dobDate.getFullYear());
+        var text = 'Age Master: ' + userName + '\n' + age.years + 'y ' + age.months + 'm ' + age.days + 'd\nWeeks: ' + age.totalWeeks + '\nZodiac: ' + getZodiac(dobDate.getMonth() + 1, dobDate.getDate());
         copyToClipboard(text);
     }
 
@@ -320,7 +314,6 @@
         $('cpDob').textContent = dobDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
         $('cpDay').textContent = DAYS[dobDate.getDay()];
         $('cpZodiac').textContent = getZodiac(dobDate.getMonth() + 1, dobDate.getDate());
-        $('cpChineseZodiac').textContent = getChineseZodiac(dobDate.getFullYear());
         $('cpBirthstone').textContent = getBirthstone(dobDate.getMonth() + 1);
         $('cpYears').textContent = age.years;
         $('cpMonths').textContent = age.months;
