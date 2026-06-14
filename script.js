@@ -10,17 +10,20 @@
     function initVisitorCounter() {
         var el = document.getElementById('visitorCount');
         if (!el) return;
+        el.textContent = 'Loading...';
         fetch(API_BASE + '/visitors')
             .then(function(r) { return r.json(); })
             .then(function(d) {
+                console.log('Visitor count:', d.count);
                 if (d.count) el.textContent = d.count.toLocaleString() + ' visitors';
-                else el.textContent = 'Welcome!';
+                else el.textContent = 'Welcome to Age Master!';
             })
-            .catch(function() {
-                el.textContent = 'Welcome!';
+            .catch(function(err) {
+                console.log('Visitor counter error:', err);
+                el.textContent = 'Welcome to Age Master!';
             });
     }
-    initVisitorCounter();
+    setTimeout(initVisitorCounter, 500);
 
     var API_BASE = (location.hostname === 'localhost' || location.protocol === 'file:')
         ? 'http://localhost:3000/api'
