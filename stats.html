@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#121222">
+    <title>Stats — Age Master</title>
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg:#121222;--surface:rgba(255,255,255,0.05);--border:rgba(255,255,255,0.08);--text:#fff;--text2:rgba(255,255,255,0.55);--text3:rgba(255,255,255,0.3);--purple:#a855f7;--pink:#ec4899;--grad:linear-gradient(135deg,#a855f7,#ec4899);--bottom-nav-h:64px}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:20px;padding-bottom:calc(var(--bottom-nav-h) + 20px)}
+        .header{text-align:center;padding:40px 0 24px}
+        .header h1{font-size:24px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .header p{font-size:13px;color:var(--text3);margin-top:4px}
+        .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px}
+        .stat-card h3{font-size:13px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+        .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+        .stat-item{background:rgba(255,255,255,0.03);border-radius:12px;padding:16px;text-align:center}
+        .stat-value{font-size:24px;font-weight:800;color:var(--purple)}
+        .stat-label{font-size:11px;color:var(--text3);margin-top:4px}
+        .stat-full{grid-column:1/-1}
+        .streak-bar{height:6px;background:rgba(255,255,255,0.08);border-radius:3px;margin-top:12px;overflow:hidden}
+        .streak-fill{height:100%;background:var(--grad);border-radius:3px;transition:width 0.5s}
+        .history-list{margin-top:12px}
+        .history-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}
+        .history-item:last-child{border-bottom:none}
+        .history-date{font-size:13px;color:var(--text2)}
+        .history-age{font-size:14px;font-weight:600;color:var(--purple)}
+        .empty-state{text-align:center;padding:40px 20px;color:var(--text3);font-size:14px}
+        .bottom-nav{position:fixed;bottom:0;left:0;right:0;height:var(--bottom-nav-h);background:rgba(18,18,34,0.95);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;z-index:100}
+        .nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none;color:var(--text3);font-size:10px;cursor:pointer;padding:8px 16px;transition:color 0.2s}
+        .nav-item.active{color:var(--purple)}
+        .nav-item svg{width:22px;height:22px}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Stats</h1>
+        <p>Your activity and statistics</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Usage Stats</h3>
+        <div class="stat-grid">
+            <div class="stat-item">
+                <div class="stat-value" id="totalCalculations">0</div>
+                <div class="stat-label">Calculations</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="totalDays">0</div>
+                <div class="stat-label">Days Active</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="totalCertificates">0</div>
+                <div class="stat-label">Certificates</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="currentStreak">0</div>
+                <div class="stat-label">Day Streak</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <h3>Your Age Today</h3>
+        <div class="stat-grid">
+            <div class="stat-item stat-full">
+                <div class="stat-value" id="yourAge">--</div>
+                <div class="stat-label" id="yourAgeLabel">Enter birthdate on Home tab</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <h3>Streak Progress</h3>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span style="font-size:13px;color:var(--text2)">This Week</span>
+            <span style="font-size:13px;color:var(--purple)" id="streakText">0/7 days</span>
+        </div>
+        <div class="streak-bar">
+            <div class="streak-fill" id="streakFill" style="width:0%"></div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <h3>Recent Calculations</h3>
+        <div class="history-list" id="historyList">
+            <div class="empty-state">No calculations yet. Go to Home tab to calculate your age.</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <h3>Fun Facts About You</h3>
+        <div id="funFacts" style="font-size:14px;color:var(--text2);line-height:1.8">
+            Calculate your age on the Home tab to see fun facts about your life.
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                <path d="M3 9L11 3L19 9V19C19 19.5523 18.5523 20 18 20H4C3.44772 20 3 19.5523 3 19V9Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                <path d="M9 20V12H13V20" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+            <span>Home</span>
+        </a>
+        <a href="stats.html" class="nav-item active">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                <rect x="3" y="12" width="3" height="7" rx="1" stroke="currentColor" stroke-width="1.3" fill="none"/>
+                <rect x="8" y="8" width="3" height="11" rx="1" stroke="currentColor" stroke-width="1.3" fill="none"/>
+                <rect x="13" y="4" width="3" height="15" rx="1" stroke="currentColor" stroke-width="1.3" fill="none"/>
+            </svg>
+            <span>Stats</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                <circle cx="11" cy="11" r="3" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                <path d="M11 2V5M11 17V20M2 11H5M17 11H20M4.2 4.2L6.3 6.3M15.7 15.7L17.8 17.8M17.8 4.2L15.7 6.3M6.3 15.7L4.2 17.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span>Settings</span>
+        </a>
+    </nav>
+
+<script>
+function loadStats() {
+    const calcs = parseInt(localStorage.getItem('ageCalcCount') || '0');
+    const certs = parseInt(localStorage.getItem('ageCertCount') || '0');
+    const firstVisit = localStorage.getItem('ageCalcFirstVisit') || new Date().toISOString();
+    const lastVisit = localStorage.getItem('ageCalcLastVisit');
+    const streak = parseInt(localStorage.getItem('ageCalcStreak') || '0');
+    const history = JSON.parse(localStorage.getItem('ageCalcHistory') || '[]');
+    const birthdate = localStorage.getItem('ageCalcBirthdate');
+
+    document.getElementById('totalCalculations').textContent = calcs;
+    document.getElementById('totalCertificates').textContent = certs;
+    document.getElementById('currentStreak').textContent = streak;
+
+    const daysActive = Math.max(1, Math.floor((Date.now() - new Date(firstVisit).getTime()) / 86400000));
+    document.getElementById('totalDays').textContent = daysActive;
+
+    const weekProgress = Math.min(100, (streak / 7) * 100);
+    document.getElementById('streakFill').style.width = weekProgress + '%';
+    document.getElementById('streakText').textContent = Math.min(streak, 7) + '/7 days';
+
+    if (history.length > 0) {
+        const list = document.getElementById('historyList');
+        list.innerHTML = history.slice(-5).reverse().map(h => `
+            <div class="history-item">
+                <span class="history-date">${new Date(h.date).toLocaleDateString()}</span>
+                <span class="history-age">${h.age}</span>
+            </div>
+        `).join('');
+    }
+
+    if (birthdate) {
+        const birth = new Date(birthdate + 'T00:00:00');
+        const now = new Date();
+        let years = now.getFullYear() - birth.getFullYear();
+        let months = now.getMonth() - birth.getMonth();
+        let days = now.getDate() - birth.getDate();
+        if (days < 0) { months--; days += new Date(now.getFullYear(), now.getMonth(), 0).getDate(); }
+        if (months < 0) { years--; months += 12; }
+
+        document.getElementById('yourAge').textContent = years + '.' + months;
+        document.getElementById('yourAgeLabel').textContent = years + ' years, ' + months + ' months, ' + days + ' days';
+
+        const totalDays = Math.floor((now - birth) / 86400000);
+        const facts = [
+            'You have lived approximately <strong>' + totalDays.toLocaleString() + ' days</strong>.',
+            'Your heart has beaten approximately <strong>' + (totalDays * 100000).toLocaleString() + ' times</strong>.',
+            'You have taken approximately <strong>' + (totalDays * 700000).toLocaleString() + ' breaths</strong>.',
+            'You have eaten approximately <strong>' + (totalDays * 3).toLocaleString() + ' meals</strong>.',
+            'You have slept approximately <strong>' + Math.floor(totalDays * 8).toLocaleString() + ' hours</strong>.'
+        ];
+        document.getElementById('funFacts').innerHTML = facts.map(f => '<p style="margin-bottom:8px">' + f + '</p>').join('');
+    }
+
+    updateStreak();
+}
+
+function updateStreak() {
+    const today = new Date().toDateString();
+    const lastCalc = localStorage.getItem('ageCalcLastDate');
+    let streak = parseInt(localStorage.getItem('ageCalcStreak') || '0');
+
+    if (lastCalc !== today) {
+        const yesterday = new Date(Date.now() - 86400000).toDateString();
+        if (lastCalc === yesterday) {
+            streak++;
+        } else if (lastCalc) {
+            streak = 1;
+        } else {
+            streak = 1;
+        }
+        localStorage.setItem('ageCalcStreak', streak);
+        localStorage.setItem('ageCalcLastDate', today);
+    }
+}
+
+loadStats();
+</script>
+</body>
+</html>
