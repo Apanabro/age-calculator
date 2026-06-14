@@ -1,6 +1,11 @@
 (function () {
     'use strict';
 
+    // Track first visit for Stats page
+    if (!localStorage.getItem('ageCalcFirstVisit')) {
+        localStorage.setItem('ageCalcFirstVisit', new Date().toISOString());
+    }
+
     var API_BASE = (location.hostname === 'localhost' || location.protocol === 'file:')
         ? 'http://localhost:3000/api'
         : 'https://age-calculator-zybq.onrender.com/api';
@@ -180,6 +185,16 @@
 
         resultsSection.classList.add('show');
         resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        // Save to localStorage for Stats page
+        var ageCount = parseInt(localStorage.getItem('ageCalcCount') || '0') + 1;
+        localStorage.setItem('ageCalcCount', ageCount);
+        localStorage.setItem('ageCalcBirthdate', val);
+        localStorage.setItem('ageCalcLastVisit', new Date().toISOString());
+        var history = JSON.parse(localStorage.getItem('ageCalcHistory') || '[]');
+        history.push({ date: new Date().toISOString(), age: age.years + 'y ' + age.months + 'm ' + age.days + 'd' });
+        if (history.length > 50) history = history.slice(-50);
+        localStorage.setItem('ageCalcHistory', JSON.stringify(history));
     }
 
     function openPremiumModal() { $('premiumModal').style.display = 'flex'; document.querySelectorAll('.plan-option').forEach(function (el) { el.classList.remove('selected'); }); document.querySelector('.plan-option[data-plan="monthly"]').classList.add('selected'); }
@@ -271,6 +286,8 @@
         var a = document.createElement('a'); a.href = url;
         a.download = 'AgeMaster_' + currentName.replace(/\s+/g, '_') + '.pdf';
         document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+        var certCount = parseInt(localStorage.getItem('ageCertCount') || '0') + 1;
+        localStorage.setItem('ageCertCount', certCount);
         showToast('PDF downloaded!');
     }
 
