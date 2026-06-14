@@ -6,6 +6,10 @@
         localStorage.setItem('ageCalcFirstVisit', new Date().toISOString());
     }
 
+    var API_BASE = (location.hostname === 'localhost' || location.protocol === 'file:')
+        ? 'http://localhost:3000/api'
+        : 'https://age-calculator-zybq.onrender.com/api';
+
     // Visitor counter using own backend
     function initVisitorCounter() {
         var el = document.getElementById('visitorCount');
@@ -14,20 +18,14 @@
         fetch(API_BASE + '/visitors')
             .then(function(r) { return r.json(); })
             .then(function(d) {
-                console.log('Visitor count:', d.count);
                 if (d.count) el.textContent = d.count.toLocaleString() + ' visitors';
                 else el.textContent = 'Welcome to Age Master!';
             })
             .catch(function(err) {
-                console.log('Visitor counter error:', err);
                 el.textContent = 'Welcome to Age Master!';
             });
     }
     setTimeout(initVisitorCounter, 500);
-
-    var API_BASE = (location.hostname === 'localhost' || location.protocol === 'file:')
-        ? 'http://localhost:3000/api'
-        : 'https://age-calculator-zybq.onrender.com/api';
 
     var ZODIAC = [
         { sign: 'Capricorn', start: [12, 22], end: [1, 19] },
