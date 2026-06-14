@@ -6,6 +6,28 @@
         localStorage.setItem('ageCalcFirstVisit', new Date().toISOString());
     }
 
+    // Visitor counter using countapi.xyz
+    function initVisitorCounter() {
+        var el = document.getElementById('visitorCount');
+        if (!el) return;
+        var KEY = 'age-master-visits';
+        var namespace = 'age-master-app';
+        // Increment counter on visit
+        fetch('https://api.countapi.xyz/hit/' + namespace + '/' + KEY)
+            .then(function(r) { return r.json(); })
+            .then(function(d) {
+                if (d.value) el.textContent = d.value.toLocaleString() + ' visitors';
+                else el.textContent = 'Welcome!';
+            })
+            .catch(function() {
+                // Fallback: show local count
+                var local = parseInt(localStorage.getItem('ageCalcLocalVisits') || '0') + 1;
+                localStorage.setItem('ageCalcLocalVisits', local);
+                el.textContent = local.toLocaleString() + ' visits';
+            });
+    }
+    initVisitorCounter();
+
     var API_BASE = (location.hostname === 'localhost' || location.protocol === 'file:')
         ? 'http://localhost:3000/api'
         : 'https://age-calculator-zybq.onrender.com/api';

@@ -147,6 +147,23 @@ body {
     transform: scale(0.92);
 }
 
+/* ── Visitor Counter ── */
+.visitor-counter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 14px;
+    margin: 8px auto 0;
+    width: fit-content;
+    background: rgba(168, 85, 247, 0.1);
+    border: 1px solid rgba(168, 85, 247, 0.2);
+    border-radius: 20px;
+    font-size: 11px;
+    color: var(--purple);
+    font-weight: 600;
+}
+
 /* ── Main Content ── */
 .main-content {
     position: fixed;
