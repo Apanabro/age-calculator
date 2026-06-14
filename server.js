@@ -151,6 +151,25 @@ app.get('/api/feedback', async (req, res) => {
     } catch (e) { return res.json({ feedback: [] }); }
 });
 
+// Visitor counter
+let visitorCount = 12847; // Starting count
+app.get('/api/visitors', async (req, res) => {
+    if (db) {
+        try {
+            const counter = await db.collection('counters').findOne({ _id: 'visitors' });
+            if (counter) {
+                visitorCount = counter.count + 1;
+                await db.collection('counters').updateOne({ _id: 'visitors' }, { $set: { count: visitorCount } });
+            } else {
+                await db.collection('counters').insertOne({ _id: 'visitors', count: visitorCount });
+            }
+        } catch (e) { visitorCount++; }
+    } else {
+        visitorCount++;
+    }
+    return res.json({ count: visitorCount });
+});
+
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });

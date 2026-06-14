@@ -6,24 +6,18 @@
         localStorage.setItem('ageCalcFirstVisit', new Date().toISOString());
     }
 
-    // Visitor counter using countapi.xyz
+    // Visitor counter using own backend
     function initVisitorCounter() {
         var el = document.getElementById('visitorCount');
         if (!el) return;
-        var KEY = 'age-master-visits';
-        var namespace = 'age-master-app';
-        // Increment counter on visit
-        fetch('https://api.countapi.xyz/hit/' + namespace + '/' + KEY)
+        fetch(API_BASE + '/visitors')
             .then(function(r) { return r.json(); })
             .then(function(d) {
-                if (d.value) el.textContent = d.value.toLocaleString() + ' visitors';
+                if (d.count) el.textContent = d.count.toLocaleString() + ' visitors';
                 else el.textContent = 'Welcome!';
             })
             .catch(function() {
-                // Fallback: show local count
-                var local = parseInt(localStorage.getItem('ageCalcLocalVisits') || '0') + 1;
-                localStorage.setItem('ageCalcLocalVisits', local);
-                el.textContent = local.toLocaleString() + ' visits';
+                el.textContent = 'Welcome!';
             });
     }
     initVisitorCounter();
