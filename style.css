@@ -148,22 +148,18 @@ body {
 }
 
 /* ── Visitor Counter ── */
-.visitor-counter {
-    display: flex;
+.visitor-badge {
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 8px 16px;
-    margin: 12px auto;
-    width: fit-content;
-    background: rgba(168, 85, 247, 0.15);
-    border: 1px solid rgba(168, 85, 247, 0.3);
-    border-radius: 20px;
-    font-size: 12px;
+    gap: 4px;
+    padding: 3px 10px;
+    background: rgba(168, 85, 247, 0.2);
+    border-radius: 12px;
+    font-size: 10px;
     color: #a855f7;
     font-weight: 600;
-    position: relative;
-    z-index: 10;
+    margin-left: 8px;
+    white-space: nowrap;
 }
 
 /* ── Main Content ── */
