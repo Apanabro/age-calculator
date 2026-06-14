@@ -1,4 +1,4 @@
-const CACHE_NAME = 'age-calc-v13';
+const CACHE_NAME = 'age-calc-v15';
 const ASSETS = [
     '/',
     '/index.html',
@@ -14,11 +14,24 @@ const ASSETS = [
     '/terms.html',
     '/sitemap.xml',
     '/robots.txt',
+    '/age-calculator.html',
     '/how-to-calculate-age.html',
     '/zodiac-sign-calculator.html',
     '/birthday-countdown.html',
     '/date-difference-calculator.html',
-    '/birthstone-guide.html'
+    '/birthstone-guide.html',
+    '/how-old-am-i.html',
+    '/age-in-months-calculator.html',
+    '/age-in-weeks-calculator.html',
+    '/age-in-days-calculator.html',
+    '/age-in-hours-calculator.html',
+    '/age-in-minutes-calculator.html',
+    '/age-calculator-by-birthdate.html',
+    '/find-my-age.html',
+    '/exact-age-calculator.html',
+    '/what-is-my-age.html',
+    '/age-calculator-today.html',
+    '/birthday-calculator.html'
 ];
 
 self.addEventListener('install', (e) => {
